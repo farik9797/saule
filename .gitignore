@@ -1,0 +1,13 @@
+
+# secrets — never commit
+password.md
+
+# firecrawl local cache
+.firecrawl/
+
+# build & tooling
+node_modules/
+dist/
+.playwright-mcp/
+.claude/
+.DS_Store

@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="{{ t.meta.lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.meta.title }}</title>
+  <meta name="description" content="{{ t.meta.description }}">
+  {# Превью на GitHub Pages не должно индексироваться — убрать на боевом домене #}
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="{{ urls[lang] }}">
+  <link rel="alternate" hreflang="ru" href="{{ urls.ru }}">
+  <link rel="alternate" hreflang="kk" href="{{ urls.kk }}">
+  <link rel="alternate" hreflang="x-default" href="{{ urls.ru }}">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ t.meta.og_locale }}">
+  <meta property="og:title" content="{{ t.meta.title }}">
+  <meta property="og:description" content="{{ t.meta.description }}">
+  <meta property="og:url" content="{{ urls[lang] }}">
+  <meta property="og:image" content="{{ urls.ru }}assets/img/hero.webp">
+  <meta name="theme-color" content="#0062B0">
+  <link rel="icon" href="{{ a }}assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+  <link rel="preload" as="image" href="{{ a }}assets/img/hero.webp">
+  <link rel="stylesheet" href="{{ a }}assets/styles.css?v={{ version }}">
+  <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('anim');setTimeout(function(){if(!d.classList.contains('anim-ready'))d.classList.remove('anim')},3000)}})(document.documentElement)</script>
+  <script type="application/ld+json">{{ jsonld }}</script>
+</head>
+<body>
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-white">{{ t.a11y.skip }}</a>
+
+{# ============ 1. Шапка ============ #}
+<header id="site-header" class="sticky top-0 z-50 border-b border-border/70 bg-surface/95 backdrop-blur transition-shadow duration-300">
+  <div class="container-site flex h-16 items-center justify-between gap-2 whitespace-nowrap sm:gap-4 lg:h-[72px] xl:max-w-[1340px]">
+    <a href="#home" class="flex min-w-0 items-center gap-2.5" aria-label="{{ t.a11y.home }}">
+      {{ logo_mark('size-10 shrink-0 lg:size-11') }}
+      <span class="min-w-0 leading-tight">
+        <span class="block text-lg font-extrabold tracking-tight text-heading lg:text-xl">{{ t.brand.name }}</span>
+        <span class="block truncate text-[11px] font-medium text-text-muted">{{ t.brand.tagline }}</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-3.5 xl:flex 2xl:gap-5" aria-label="Main">
+      {% for key in nav_keys %}<a href="#{{ nav_ids[key] }}" class="nav-link" data-nav="{{ nav_ids[key] }}">{{ t.nav[key] }}</a>{% endfor %}
+    </nav>
+
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+      <a href="tel:{{ b.phone.tel }}" class="hidden min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg text-sm font-semibold text-heading transition-colors hover:text-primary lg:flex xl:hover:bg-primary-soft 2xl:hover:bg-transparent" aria-label="{{ t.a11y.call }} {{ b.phone.display }}" data-goal="phone">
+        {{ icon('phone', 'size-4 text-primary') }}<span class="xl:hidden 2xl:inline">{{ b.phone.display }}</span>
+      </a>
+      <div class="flex items-center rounded-lg border border-border p-0.5 text-xs font-bold" role="group" aria-label="{{ t.a11y.lang }}">
+        <a href="{{ lang_href.ru }}" data-lang-link class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'ru' else 'text-text hover:text-primary' }}" {% if lang == 'ru' %}aria-current="true"{% endif %} hreflang="ru" lang="ru">RU</a>
+        <a href="{{ lang_href.kk }}" data-lang-link class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'kk' else 'text-text hover:text-primary' }}" {% if lang == 'kk' %}aria-current="true"{% endif %} hreflang="kk" lang="kk">KZ</a>
+      </div>
+      <a href="#contact" class="btn-primary hidden !h-11 !px-5 md:inline-flex">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
+      <button type="button" id="burger" class="grid size-11 cursor-pointer place-items-center rounded-lg text-heading hover:bg-primary-soft xl:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="{{ t.a11y.menu_open }}" data-label-open="{{ t.a11y.menu_open }}" data-label-close="{{ t.a11y.menu_close }}">
+        {{ icon('menu', 'size-6') }}
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-border bg-surface xl:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <nav class="container-site flex flex-col py-3">
+      {% for key in nav_keys %}<a href="#{{ nav_ids[key] }}" class="flex min-h-11 cursor-pointer items-center border-b border-border/60 text-[15px] font-semibold text-heading hover:text-primary">{{ t.nav[key] }}</a>{% endfor %}
+      <a href="tel:{{ b.phone.tel }}" class="mt-3 flex min-h-11 items-center gap-2 font-semibold text-heading">{{ icon('phone', 'size-4 text-primary') }}{{ b.phone.display }}</a>
+      <a href="#contact" class="btn-primary mt-2 w-full">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+{# ============ 2. Hero ============ #}
+<section id="home" class="relative overflow-hidden bg-bg-page">
+  <div class="container-site relative z-10 grid items-center gap-8 pt-8 pb-10 lg:min-h-[560px] lg:grid-cols-2 lg:py-16">
+    <div class="max-w-xl lg:max-w-[640px]">
+      <p class="text-[15px] font-medium text-overline md:text-lg" data-hero>{{ t.hero.overline }}</p>
+      <h1 data-hero class="mt-2 text-[28px] font-extrabold leading-[1.15] tracking-tight md:text-[40px] lg:text-[48px]">{{ t.hero.title }}</h1>
+      <p class="mt-4 text-[15px] leading-relaxed md:text-lg" data-hero>{{ t.hero.text }}</p>
+      <div class="mt-7 flex flex-col gap-3 sm:flex-row" data-hero>
+        <a href="#contact" class="btn-primary" data-topic="{{ t.hero.topic }}">{{ t.hero.btn_primary }}{{ icon('arrow-right', 'size-4') }}</a>
+        <a href="#contacts" class="btn-secondary">{{ t.hero.btn_secondary }}</a>
+      </div>
+      <ul class="mt-8 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4" data-hero-list>
+        {% for f in t.hero.features %}
+        <li class="flex items-center gap-2.5">
+          <span class="icon-badge size-11 rounded-full border border-primary/10 bg-surface">{{ icon(hero_icons[loop.index0], 'size-5') }}</span>
+          <span class="text-[13px] font-medium leading-snug text-text">{{ f }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="relative lg:hidden" data-hero>
+      <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="aspect-[4/3] w-full rounded-2xl object-cover" fetchpriority="high">
+    </div>
+  </div>
+  {# десктоп: фото уходит в правый край и растворяется в фоне слева #}
+  <div id="hero-media" class="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] overflow-hidden lg:block">
+    <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="size-full object-cover object-left" fetchpriority="high">
+    <div class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-bg-page to-transparent"></div>
+  </div>
+</section>
+
+{# ============ 3. О компании ============ #}
+<section id="about" class="section">
+  <div class="container-site grid items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.about.overline }}</p>
+      <h2 class="h2">{{ t.about.title }}</h2>
+      <p class="mt-5 leading-relaxed">{{ t.about.text }}</p>
+      <a href="#advantages" class="btn-primary mt-7">{{ t.about.btn }}{{ icon('arrow-right', 'size-4') }}</a>
+    </div>
+    <div class="reveal relative lg:pr-24">
+      <img src="{{ a }}assets/img/about.webp" alt="{{ t.about.img_alt }}" width="985" height="600" loading="lazy" class="aspect-[16/10] w-full rounded-2xl object-cover">
+      <ul id="about-card" class="card mt-4 space-y-4 p-5 shadow-float lg:absolute lg:-right-0 lg:top-1/2 lg:mt-0 lg:w-72 lg:-translate-y-1/2 lg:p-6">
+        {% for f in t.about.facts %}
+        <li class="flex items-center gap-3.5">
+          <span class="icon-badge size-11 rounded-full">{{ icon(about_icons[loop.index0], 'size-5') }}</span>
+          <span class="text-sm font-medium leading-snug text-heading">{{ f }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{# ============ 4. Преимущества ============ #}
+<section id="advantages" class="section bg-bg-page">
+  <div class="container-site">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.advantages.overline }}</p>
+      <h2 class="h2">{{ t.advantages.title }}</h2>
+    </div>
+    {# сетка с линиями-разделителями: gap-px на фоне цвета border #}
+    <ul data-stagger class="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-px md:overflow-hidden md:rounded-2xl md:border md:border-border md:bg-border md:shadow-card lg:mt-10 lg:grid-cols-6">
+      {% for it in t.advantages['items'] %}
+      <li class="flex items-center gap-4 rounded-xl bg-surface p-4 md:flex-col md:items-start md:rounded-none md:p-6">
+        <span class="icon-badge size-12 rounded-xl">{{ icon(adv_icons[loop.index0], 'size-6') }}</span>
+        <div>
+          <h3 class="text-base font-bold leading-snug md:text-[17px]">{{ it.title }}</h3>
+          <p class="mt-1 text-sm leading-relaxed text-text-muted max-sm:hidden">{{ it.text }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ============ 5. Продукция ============ #}
+<section id="products" class="section">
+  <div class="container-site">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.products.overline }}</p>
+      <h2 class="h2">{{ t.products.title }}</h2>
+    </div>
+    <div class="mt-8 grid gap-4 md:grid-cols-3 md:gap-6 lg:mt-10">
+      {% for it in t.products['items'] %}
+      <article class="card reveal group flex overflow-hidden transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float md:flex-col">
+        <div class="w-[96px] shrink-0 overflow-hidden bg-primary-soft sm:w-40 md:w-full">
+          <img src="{{ a }}assets/img/{{ product_imgs[loop.index0] }}.webp" alt="{{ it.alt }}" width="640" height="228" loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03] md:aspect-[16/9] md:h-auto">
+        </div>
+        <div class="flex flex-1 flex-col p-4 md:p-6">
+          <h3 class="text-base font-bold md:text-lg">{{ it.title }}</h3>
+          <p class="mt-1.5 flex-1 text-sm leading-relaxed text-text-muted">{{ it.text }}</p>
+          <a href="#contact" class="link-more mt-3 self-start md:mt-5" data-topic="{{ it.title }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ============ 6. Сотрудничество ============ #}
+<section id="partners" class="section bg-bg-page">
+  <div class="container-site">
+    <div class="card reveal grid overflow-hidden md:grid-cols-[35%_1fr]">
+      <img src="{{ a }}assets/img/partners.webp" alt="{{ t.partners.img_alt }}" width="627" height="336" loading="lazy" class="aspect-[16/8] size-full object-cover md:aspect-auto">
+      <div class="p-5 md:p-8 lg:p-10">
+        <p class="eyebrow">{{ t.partners.overline }}</p>
+        <h2 class="h2">{{ t.partners.title }}</h2>
+        <p class="mt-4 leading-relaxed max-md:line-clamp-4">{{ t.partners.text }}</p>
+        <ul data-stagger class="mt-6 grid grid-cols-2 gap-4 max-md:hidden lg:grid-cols-4">
+          {% for it in t.partners['items'] %}
+          <li class="flex items-center gap-3">
+            <span class="icon-badge size-10 rounded-lg">{{ icon(partner_icons[loop.index0], 'size-5') }}</span>
+            <span class="text-[13px] font-medium leading-snug text-text">{{ it }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="#contact" class="link-more mt-6" data-topic="{{ t.partners.topic }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============ 7. Как мы работаем ============ #}
+<section id="process" class="section">
+  <div class="container-site">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.process.overline }}</p>
+      <h2 class="h2">{{ t.process.title }}</h2>
+    </div>
+    <ol id="steps" data-stagger class="mt-8 grid gap-0 md:grid-cols-4 md:gap-6 lg:mt-12">
+      {% for s in t.process.steps %}
+      <li class="relative flex gap-4 pb-7 last:pb-0 md:block md:pb-0">
+        {# вертикальная линия (мобильный) #}
+        {% if not loop.last %}<span class="absolute left-[21px] top-12 bottom-1 w-px bg-border md:hidden" aria-hidden="true"></span>{% endif %}
+        <div class="flex items-center gap-3 md:mb-5">
+          <span class="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-primary text-[15px] font-bold text-white ring-8 ring-primary-soft">{{ '%02d' % loop.index }}</span>
+          {% if not loop.last %}<span class="step-line hidden h-px flex-1 origin-left bg-primary/30 md:block" aria-hidden="true"></span><span class="-ml-3 hidden text-text-muted md:block" aria-hidden="true">{{ icon('chevron-right', 'size-4') }}</span>{% endif %}
+        </div>
+        <div>
+          <h3 class="text-base font-bold md:text-lg">{{ s.title }}</h3>
+          <p class="mt-1 text-sm leading-relaxed text-text-muted">{{ s.text }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{# ============ 8. Качество ============ #}
+<section id="quality" class="section bg-bg-page">
+  <div class="container-site grid items-center gap-6 lg:grid-cols-[1fr_1.35fr_1fr] lg:gap-10">
+    <img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="reveal aspect-[16/9] w-full rounded-2xl object-cover lg:aspect-[4/3]">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.quality.overline }}</p>
+      <h2 class="h2">{{ t.quality.title }}</h2>
+      <p class="mt-4 leading-relaxed">{{ t.quality.text }}</p>
+    </div>
+    <ul data-stagger class="card space-y-4 p-6">
+      {% for c in t.quality.checklist %}
+      <li class="flex items-center gap-3 text-[15px] font-medium text-heading">
+        <span class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-white">{{ icon('check', 'size-4') }}</span>{{ c }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ============ 9. Ценовая политика + аналитика (из брифа) ============ #}
+<section id="pricing" class="section">
+  <div class="container-site grid gap-6 lg:grid-cols-2 lg:gap-10">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.pricing.overline }}</p>
+      <h2 class="h2">{{ t.pricing.title }}</h2>
+      <p class="mt-4 leading-relaxed">{{ t.pricing.text }}</p>
+      <ul data-stagger class="mt-6 grid gap-3 sm:grid-cols-3">
+        {% for p in t.pricing.points %}
+        <li class="flex items-center gap-3 rounded-xl border border-border bg-bg-page p-3.5 sm:flex-col sm:items-start">
+          <span class="icon-badge size-10 rounded-lg bg-surface">{{ icon(pricing_icons[loop.index0], 'size-5') }}</span>
+          <span class="text-sm font-semibold leading-snug text-heading">{{ p }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <img src="{{ a }}assets/img/pricing.webp" alt="{{ t.pricing.img_alt }}" width="810" height="285" loading="lazy" class="mt-6 aspect-[810/285] w-full rounded-2xl object-cover">
+    </div>
+    <div class="reveal flex flex-col justify-center rounded-2xl bg-primary p-6 text-white md:p-10">
+      <span class="grid size-12 place-items-center rounded-xl bg-white/15">{{ icon('chart-line', 'size-6') }}</span>
+      <h3 class="mt-5 text-xl font-bold !text-white md:text-2xl">{{ t.pricing.analytics_title }}</h3>
+      <p class="mt-3 leading-relaxed text-white/85">{{ t.pricing.analytics_text }}</p>
+      <ul data-stagger class="mt-6 space-y-3">
+        {% for it in t.pricing.analytics_items %}
+        <li class="flex items-center gap-3 rounded-xl bg-white/10 p-3.5 text-[15px] font-semibold">
+          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-primary">{{ icon(analytics_icons[loop.index0], 'size-5') }}</span>{{ it }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{# ============ 10. Акции (из брифа) ============ #}
+<section id="promo" class="section bg-bg-page">
+  <div class="container-site">
+    <div class="reveal">
+      <p class="eyebrow">{{ t.promo.overline }}</p>
+      <h2 class="h2">{{ t.promo.title }}</h2>
+    </div>
+    <div class="mt-8 grid gap-4 md:grid-cols-3 md:gap-6 lg:mt-10">
+      {% for it in t.promo['items'] %}
+      {% set dark = loop.index0 < 2 %}
+      <article class="reveal flex flex-col rounded-2xl p-6 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float md:p-7 {{ ['bg-primary text-white', 'bg-footer text-white', 'border border-primary/15 bg-primary-soft text-text'][loop.index0] }}">
+        <div class="flex items-center justify-between">
+          <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ 'bg-white/15 text-white' if dark else 'bg-surface text-primary' }}">{{ it.label }}</span>
+          <span class="{{ 'text-white/70' if dark else 'text-primary' }}">{{ icon(promo_icons[loop.index0], 'size-7') }}</span>
+        </div>
+        <h3 class="mt-6 text-xl font-bold leading-snug {{ '!text-white' if dark else '' }}">{{ it.title }}</h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed {{ 'text-white/80' if dark else 'text-text' }}">{{ it.text }}</p>
+        <a href="#contact" data-topic="{{ it.topic }}" class="mt-6 inline-flex cursor-pointer items-center gap-1.5 self-start text-sm font-semibold transition-opacity hover:opacity-80 {{ 'text-white' if dark else 'text-primary' }}">{{ t.promo.more }}{{ icon('arrow-right', 'size-4') }}</a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ============ 11–12. Аптеки + Заявка ============ #}
+<section id="branches" class="section">
+  <div class="container-site grid gap-10 lg:grid-cols-2 lg:gap-12">
+    <div class="reveal">
+      <h2 class="text-[22px] font-bold md:text-[28px]">{{ t.branches.title }}</h2>
+      <p class="mt-2 text-sm leading-relaxed text-text-muted md:text-[15px]">{{ t.branches.text }}</p>
+      <ul data-stagger class="mt-6 space-y-4">
+        {% for br in b['items'] %}
+        <li class="card flex gap-4 p-3 md:p-4">
+          <div class="relative hidden w-32 shrink-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-footer p-3 text-white sm:flex">
+            {{ logo_mark('size-10', invert=True) }}
+            <span class="text-[13px] font-extrabold tracking-tight">{{ t.brand.name }}</span>
+            <span class="text-[11px] text-white/75">{{ br.city }}</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <p class="font-bold text-heading">{{ br.address[lang] }}</p>
+              {% if br.hours == '24/7' %}<span class="rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-bold text-success">{{ t.branches.open24 }}</span>{% endif %}
+            </div>
+            <dl class="mt-2 space-y-1 text-sm text-text">
+              {% if br.phone %}<div class="flex items-center gap-2">{{ icon('phone', 'size-4 text-primary') }}<a href="tel:{{ br.phone }}" class="hover:text-primary">{{ b.phone.display }}</a></div>{% endif %}
+              {% if br.hours and br.hours != '24/7' %}<div class="flex items-center gap-2">{{ icon('clock', 'size-4 text-primary') }}{{ t.branches.daily }} {{ br.hours }}</div>{% endif %}
+              {% if br.rating %}<div class="flex items-center gap-2">{{ icon('star', 'size-4 text-primary') }}<span><b class="text-heading">{{ br.rating }}</b> · {{ br.ratings }} {{ t.branches.ratings }}</span></div>{% endif %}
+              {% if not br.phone %}<div class="flex items-center gap-2 text-text-muted">{{ icon('info', 'size-4') }}{{ t.branches.pending }}</div>{% endif %}
+            </dl>
+            {% if br.url %}
+            <a href="{{ br.url }}" target="_blank" rel="noopener" class="btn-primary mt-3 !h-10 !px-4 !text-sm" data-goal="open_2gis">{{ icon('map-pin', 'size-4') }}{{ t.branches.open_2gis }}</a>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div id="contact" class="reveal card p-5 md:p-8">
+      <h2 class="text-[22px] font-bold md:text-[28px]">{{ t.form.title }}</h2>
+      <p class="mt-2 text-sm leading-relaxed text-text-muted md:text-[15px]">{{ t.form.text }}</p>
+      <form id="lead-form" class="mt-6 grid gap-4 md:grid-cols-2" novalidate
+            data-wa="{{ b.whatsapp.wa }}" data-intro="{{ t.form.wa_intro }}" data-topic-prefix="{{ t.form.topic_prefix }}">
+        <div>
+          <label for="f-name" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.name }} <span class="text-danger" aria-hidden="true">*</span></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required class="field" aria-describedby="e-name" data-error="{{ t.form.err_name }}">
+          <p id="e-name" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+        </div>
+        <div>
+          <label for="f-org" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.org }}</label>
+          <input id="f-org" name="org" type="text" autocomplete="organization" class="field">
+        </div>
+        <div>
+          <label for="f-phone" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.phone }} <span class="text-danger" aria-hidden="true">*</span></label>
+          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required class="field" aria-describedby="e-phone" data-error="{{ t.form.err_phone }}">
+          <p id="e-phone" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+        </div>
+        <div>
+          <label for="f-email" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.email }}</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" class="field" aria-describedby="e-email" data-error="{{ t.form.err_email }}">
+          <p id="e-email" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+        </div>
+        <div class="md:col-span-2">
+          <label for="f-message" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.message }}</label>
+          <textarea id="f-message" name="message" rows="4" class="field !h-auto py-3"></textarea>
+        </div>
+        {# honeypot #}
+        <div class="hidden" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="md:col-span-2">
+          <label class="flex cursor-pointer items-start gap-3 text-sm text-text">
+            <input id="f-consent" name="consent" type="checkbox" required class="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary" aria-describedby="e-consent" data-error="{{ t.form.err_consent }}">
+            <span>{{ t.form.consent }} <span class="text-danger" aria-hidden="true">*</span></span>
+          </label>
+          <p id="e-consent" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="btn-primary w-full md:w-auto">{{ icon('send', 'size-4') }}{{ t.form.submit }}</button>
+          <p id="form-success" class="mt-4 hidden rounded-lg bg-success-soft p-3 text-sm font-medium text-success" role="status">{{ t.form.success }}</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{# ============ 13. Возврат и обмен (из брифа) ============ #}
+<section class="pb-12 lg:pb-16" aria-labelledby="returns-title">
+  <div class="container-site">
+    <div class="reveal flex items-start gap-3 rounded-xl border border-warning/20 bg-warning-soft p-4 md:items-center md:p-5">
+      <span class="text-warning">{{ icon('info', 'size-5') }}</span>
+      <p class="text-sm leading-relaxed text-warning"><b id="returns-title">{{ t.returns.title }}.</b> {{ t.returns.text }}</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+{# ============ 14. Футер ============ #}
+<footer id="contacts" class="bg-footer text-on-footer-muted">
+  <div class="container-site grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_0.8fr_1.3fr] lg:gap-8">
+    <div>
+      <a href="#home" class="flex items-center gap-2.5" aria-label="{{ t.a11y.home }}">
+        {{ logo_mark('size-11', invert=True) }}
+        <span class="leading-tight">
+          <span class="block text-lg font-extrabold text-white">{{ t.brand.name }}</span>
+          <span class="block text-[11px]">{{ t.brand.tagline }}</span>
+        </span>
+      </a>
+      <p class="mt-4 text-xs">{{ t.footer.bin }}</p>
+    </div>
+    <div>
+      <h2 class="text-sm font-bold !text-white">{{ t.footer.contacts }}</h2>
+      <ul class="mt-3 space-y-2 text-sm">
+        <li><a href="tel:{{ b.phone.tel }}" class="flex items-center gap-2 hover:text-white" data-goal="phone">{{ icon('phone', 'size-4 text-white') }}{{ b.phone.display }}</a></li>
+        <li class="flex items-start gap-2">{{ icon('map-pin', 'size-4 mt-0.5 shrink-0 text-white') }}{{ t.footer.address }}</li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-sm font-bold !text-white">{{ t.footer.schedule }}</h2>
+      <ul class="mt-3 space-y-2 text-sm">
+        {% for l in t.footer.schedule_lines %}<li class="flex items-start gap-2">{{ icon('clock', 'size-4 mt-0.5 shrink-0 text-white') }}{{ l }}</li>{% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-sm font-bold !text-white">{{ t.footer.messengers }}</h2>
+      <a href="https://wa.me/{{ b.whatsapp.wa }}?text={{ wa_hello }}" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-2 text-sm hover:text-white" aria-label="{{ t.a11y.whatsapp }}" data-goal="whatsapp">
+        <span class="grid size-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">{{ brand_icon('whatsapp', 'size-5') }}</span>WhatsApp
+      </a>
+    </div>
+    <iframe src="{{ map_url }}" title="{{ t.branches.map_label }}" loading="lazy" class="hidden h-44 w-full overflow-hidden rounded-xl border-0 bg-white/5 lg:block" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <div class="border-t border-white/10">
+    <p class="container-site pt-5 text-xs text-white">{{ t.footer.disclaimer }}</p>
+    <div class="container-site flex flex-col gap-3 pt-2 pb-5 text-xs md:flex-row md:items-center md:justify-between">
+      <p>{{ t.footer.rights }}</p>
+      <div class="flex gap-5">
+        <a href="#" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.privacy }}</a>
+        <a href="#" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.terms }}</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{# плавающая кнопка WhatsApp на мобильном #}
+<a href="https://wa.me/{{ b.whatsapp.wa }}?text={{ wa_hello }}" target="_blank" rel="noopener" class="fixed right-4 bottom-4 z-40 grid size-14 cursor-pointer place-items-center rounded-full bg-primary text-white shadow-float transition-colors hover:bg-primary-hover md:hidden" aria-label="{{ t.a11y.whatsapp }}" data-goal="whatsapp">{{ brand_icon('whatsapp', 'size-6') }}</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
+<script src="{{ a }}assets/main.js?v={{ version }}" defer></script>
+</body>
+</html>

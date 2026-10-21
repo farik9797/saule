@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@source "./template.html";
+@source "./main.js";
+
+/* Токены — раздел 2 ТЗ. text-muted и overline затемнены до контраста ≥ 4.5:1 */
+@theme {
+  --color-primary: #0062B0;
+  --color-primary-hover: #004F8F;
+  --color-primary-soft: #EBF5FC;
+  --color-heading: #062A5A;
+  --color-overline: #2A73BA;
+  --color-text: #4B6280;
+  --color-text-muted: #56708E;
+  --color-bg-page: #F2F8FD;
+  --color-surface: #FFFFFF;
+  --color-border: #E2ECF6;
+  --color-footer: #0C3866;
+  --color-on-footer: #FFFFFF;
+  --color-on-footer-muted: #B9CBE0;
+  --color-success: #17694A;
+  --color-success-soft: #E3F4EC;
+  --color-warning: #9A5B00;
+  --color-warning-soft: #FFF6E8;
+  --color-danger: #B42318;
+
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 8px 24px rgba(6, 42, 90, 0.06);
+  --shadow-float: 0 16px 40px rgba(6, 42, 90, 0.10);
+
+  --container-site: 1200px;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+  body { @apply bg-surface font-sans text-text antialiased; }
+  h1, h2, h3 { @apply text-heading; }
+  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  .container-site { @apply mx-auto w-full max-w-site px-4 md:px-6; }
+  .section { @apply py-12 lg:py-20; }
+  .eyebrow { @apply flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-overline md:text-sm; }
+  .eyebrow::before { content: ""; @apply h-0.5 w-6 shrink-0 rounded-full bg-primary; }
+  .h2 { @apply mt-3 text-[22px] font-bold leading-[1.2] md:text-[32px]; }
+  .btn-primary, .btn-secondary { @apply inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-6 text-[15px] font-semibold transition-colors duration-200 md:h-12; }
+  .btn-primary { @apply bg-primary text-white hover:bg-primary-hover; }
+  .btn-secondary { @apply border border-primary bg-surface text-primary hover:bg-primary-soft; }
+  .icon-badge { @apply grid shrink-0 place-items-center rounded-xl bg-primary-soft text-primary; }
+  .card { @apply rounded-2xl border border-border bg-surface shadow-card; }
+  .field { @apply h-12 w-full rounded-lg border border-border bg-surface px-4 text-[15px] text-heading placeholder:text-text-muted transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15; }
+  .field[aria-invalid="true"] { @apply border-danger; }
+  .link-more { @apply inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover; }
+  .nav-link { @apply relative cursor-pointer py-2 text-[13px] font-medium 2xl:text-sm text-heading transition-colors hover:text-primary; }
+  .nav-link.is-active { @apply text-primary; }
+  .nav-link.is-active::after { content: ""; @apply absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-primary; }
+}
+
+/* Анимации (GSAP). Скрываем стартовые состояния только при html.anim —
+   класс ставится в <head>, снимается при reduced-motion или если CDN не загрузился за 3 с */
+.anim .reveal, .anim [data-stagger] > *, .anim [data-hero], .anim [data-hero-list] > *, .anim #hero-media { opacity: 0; }
+.anim .step-line { transform: scaleX(0); }
+.eyebrow::before { transform-origin: left; transition: transform .7s cubic-bezier(.2,.7,.2,1) .15s; }
+.anim .eyebrow::before { transform: scaleX(0); }
+.anim .is-in .eyebrow::before, .anim .is-in.eyebrow::before { transform: scaleX(1); }
+#site-header.is-scrolled { box-shadow: 0 6px 24px rgba(6, 42, 90, 0.08); }
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* 2ГИС: подгоняем контролы под тёмный футер */
+#map .leaflet-control-attribution { font-size: 9px; }
