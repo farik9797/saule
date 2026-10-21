@@ -35,6 +35,8 @@
 @layer base {
   html { scroll-behavior: smooth; scroll-padding-top: 88px; }
   body { @apply bg-surface font-sans text-text antialiased; }
+  p { text-wrap: pretty; }
+  h1, h2, h3 { text-wrap: balance; }
   h1, h2, h3 { @apply text-heading; }
   :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
@@ -47,13 +49,15 @@
   .container-site { @apply mx-auto w-full max-w-site px-4 md:px-6; }
   /* шапка и подвал шире контента: в 1200 px полная шапка не помещается */
   .container-wide { @apply xl:max-w-[1340px] 3xl:max-w-[1480px]; }
-  .section { @apply py-12 lg:py-20; }
-  .eyebrow { @apply flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-overline md:text-sm; }
-  .eyebrow::before { content: ""; @apply h-0.5 w-6 shrink-0 rounded-full bg-primary; }
-  .h2 { @apply mt-3 text-[22px] font-bold leading-[1.2] md:text-[32px]; }
+  .section { @apply py-16 lg:py-28; }
+  .eyebrow { @apply flex items-center gap-2.5 text-sm font-semibold text-overline md:text-[15px]; }
+  .eyebrow::before { content: ""; @apply size-2 shrink-0 rounded-[3px] bg-primary; }
+  .eyebrow-light { @apply text-white/80; }
+  .eyebrow-light::before { @apply bg-white; }
+  .h2 { @apply mt-4 text-[28px] font-extrabold leading-[1.1] tracking-[-0.02em] md:text-[36px] lg:text-[44px]; }
   .btn-primary, .btn-secondary { @apply inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-6 text-[15px] font-semibold transition-colors duration-200 md:h-12; }
-  .btn-primary { @apply bg-primary text-white hover:bg-primary-hover; }
-  .btn-secondary { @apply border border-primary bg-surface text-primary hover:bg-primary-soft; }
+  .btn-primary { @apply bg-primary text-white shadow-[0_8px_20px_-8px_rgba(0,98,176,0.55)] hover:bg-primary-hover active:scale-[.98]; }
+  .btn-secondary { @apply border border-primary bg-surface text-primary hover:bg-primary-soft active:scale-[.98]; }
   .icon-badge { @apply grid shrink-0 place-items-center rounded-xl bg-primary-soft text-primary; }
   .card { @apply rounded-2xl border border-border bg-surface shadow-card; }
   .field { @apply h-12 w-full rounded-lg border border-border bg-surface px-4 text-[15px] text-heading placeholder:text-text-muted transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15; }
@@ -68,9 +72,13 @@
    класс ставится в <head>, снимается при reduced-motion или если CDN не загрузился за 3 с */
 .anim .reveal, .anim [data-stagger] > *, .anim [data-hero], .anim [data-hero-list] > *, .anim #hero-media { opacity: 0; }
 .anim .step-line { transform: scaleX(0); }
-.eyebrow::before { transform-origin: left; transition: transform .7s cubic-bezier(.2,.7,.2,1) .15s; }
-.anim .eyebrow::before { transform: scaleX(0); }
-.anim .is-in .eyebrow::before, .anim .is-in.eyebrow::before { transform: scaleX(1); }
+.eyebrow::before { transition: transform .6s cubic-bezier(.3,1.6,.5,1) .15s; }
+.anim .eyebrow::before { transform: scale(0) rotate(-45deg); }
+.anim .is-in .eyebrow::before, .anim .is-in.eyebrow::before { transform: none; }
+
+/* мягкие подсветки фона в цветах бренда */
+.hero-glow { background: radial-gradient(55% 60% at 88% 8%, rgba(0,98,176,.14), transparent 70%), radial-gradient(40% 50% at 0% 100%, rgba(47,127,204,.10), transparent 70%); }
+.accent-glow { background: radial-gradient(60% 80% at 0% 0%, rgba(255,255,255,.14), transparent 60%), radial-gradient(50% 60% at 100% 100%, rgba(255,255,255,.06), transparent 70%); }
 #site-header.is-scrolled { box-shadow: 0 6px 24px rgba(6, 42, 90, 0.08); }
 
 /* Попапы (<dialog>): плавное появление; закрытие тоже анимируется там, где есть allow-discrete */

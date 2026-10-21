@@ -129,74 +129,100 @@
 
 {# ============ 2. Hero ============ #}
 <section id="home" class="relative overflow-hidden bg-bg-page">
-  <div class="container-site relative z-10 grid items-center gap-8 pt-8 pb-10 lg:min-h-[560px] lg:grid-cols-2 lg:py-16">
-    <div class="max-w-xl lg:max-w-[640px]">
-      <p class="text-[15px] font-medium text-overline md:text-lg" data-hero>{{ t.hero.overline }}</p>
-      <h1 data-hero class="mt-2 text-[28px] font-extrabold leading-[1.15] tracking-tight md:text-[40px] lg:text-[48px]">{{ t.hero.title }}</h1>
-      <p class="mt-4 text-[15px] leading-relaxed md:text-lg" data-hero>{{ t.hero.text }}</p>
-      <div class="mt-7 flex flex-col gap-3 sm:flex-row" data-hero>
-        <a href="#contact" data-modal="lead" class="btn-primary" data-topic="{{ t.hero.topic }}">{{ t.hero.btn_primary }}{{ icon('arrow-right', 'size-4') }}</a>
-        <a href="#contacts" class="btn-secondary">{{ t.hero.btn_secondary }}</a>
+  <div aria-hidden="true" class="hero-glow pointer-events-none absolute inset-0"></div>
+  <div class="container-site relative grid items-center gap-10 pt-10 pb-24 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pt-16 lg:pb-32">
+    <div>
+      <p data-hero class="inline-flex items-center gap-2.5 rounded-full border border-primary/15 bg-surface px-4 py-1.5 text-sm font-semibold text-primary shadow-card">
+        <span class="relative flex size-2" aria-hidden="true"><span class="absolute inline-flex size-full animate-ping rounded-full bg-primary/40 motion-reduce:animate-none"></span><span class="relative inline-flex size-2 rounded-full bg-primary"></span></span>{{ t.hero.overline }}
+      </p>
+      <h1 data-hero class="mt-5 text-[34px] font-extrabold leading-[1.06] tracking-[-0.025em] text-balance sm:text-5xl lg:text-[56px]">{{ t.hero.title }}</h1>
+      <p data-hero class="mt-5 max-w-xl text-base leading-relaxed md:text-lg">{{ t.hero.text }}</p>
+      <div data-hero class="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+        <a href="#contact" data-modal="lead" class="btn-primary !h-14 !px-7 !text-base" data-topic="{{ t.hero.topic }}">{{ t.hero.btn_primary }}{{ icon('arrow-right', 'size-5') }}</a>
+        <a href="#contacts" class="group inline-flex h-12 cursor-pointer items-center justify-center gap-2 px-3 text-base font-semibold text-heading transition-colors hover:text-primary">{{ icon('phone', 'size-5 text-primary') }}{{ t.hero.btn_secondary }}</a>
       </div>
-      <ul class="mt-8 grid grid-cols-2 gap-x-3 gap-y-4 sm:max-w-md lg:max-w-none xl:w-[700px] xl:grid-cols-4" data-hero-list>
-        {% for f in t.hero.features %}
-        <li class="flex min-w-0 items-center gap-2.5 max-[399px]:flex-col max-[399px]:items-start max-[399px]:gap-2">
-          <span class="icon-badge size-11 rounded-full border border-primary/10 bg-surface">{{ icon(hero_icons[loop.index0], 'size-5') }}</span>
-          <span class="text-[13px] font-medium leading-snug text-text">{{ f }}</span>
-        </li>
-        {% endfor %}
-      </ul>
     </div>
-    <div class="relative lg:hidden" data-hero>
-      <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="aspect-[4/3] w-full rounded-2xl object-cover" fetchpriority="high">
+    <div data-hero class="relative">
+      <div id="hero-media" class="relative aspect-[4/3.3] overflow-hidden rounded-[28px] shadow-float lg:aspect-[1/1.02]">
+        <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="absolute inset-x-0 top-0 h-[112%] w-full object-cover" fetchpriority="high">
+        <div class="absolute inset-0 bg-gradient-to-t from-heading/25 via-transparent to-transparent"></div>
+      </div>
+      <div class="absolute top-5 -left-2 flex items-center gap-3 rounded-2xl bg-surface/95 px-4 py-3 shadow-float backdrop-blur sm:-left-4 lg:top-10 xl:-left-10">
+        <span class="icon-badge size-10 rounded-xl">{{ icon('star', 'size-5') }}</span>
+        <span class="leading-tight"><b class="block text-lg font-extrabold text-heading tabular-nums">{{ stats.rating }} <span class="text-sm font-semibold text-text-muted">/ 5</span></b><span class="text-xs font-medium text-text-muted">{{ stats.ratings }} {{ t.branches.ratings }}</span></span>
+      </div>
+      <div class="absolute -right-2 bottom-5 flex items-center gap-3 rounded-2xl bg-primary px-4 py-3 text-white shadow-float sm:-right-3 lg:bottom-10 xl:-right-8">
+        <span class="grid size-10 place-items-center rounded-xl bg-white/15">{{ icon('calendar-days', 'size-5') }}</span>
+        <span class="max-w-[11rem] text-sm font-semibold leading-snug">{{ t.about.facts[0] }}</span>
+      </div>
     </div>
-  </div>
-  {# десктоп: фото уходит в правый край и растворяется в фоне слева #}
-  <div id="hero-media" class="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] overflow-hidden lg:block">
-    <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="size-full object-cover object-left" fetchpriority="high">
-    <div class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-bg-page to-transparent"></div>
   </div>
 </section>
 
+{# полоса преимуществ, наезжает на край hero #}
+<div class="relative z-10 -mt-12 lg:-mt-16">
+  <div class="container-site">
+    <ul data-hero-list class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-border shadow-float lg:grid-cols-4">
+      {% for f in t.hero.features %}
+      <li class="flex flex-col items-start gap-3 bg-surface p-4 sm:flex-row sm:items-center md:p-5 lg:p-6">
+        <span class="icon-badge size-11 rounded-xl md:size-12">{{ icon(hero_icons[loop.index0], 'size-5 md:size-6') }}</span>
+        <span class="text-sm font-semibold leading-snug text-heading md:text-[15px]">{{ f }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
 {# ============ 3. О компании ============ #}
 <section id="about" class="section">
-  <div class="container-site grid items-center gap-10 lg:grid-cols-[5fr_7fr] lg:gap-14">
-    <div class="reveal">
-      <p class="eyebrow">{{ t.about.overline }}</p>
-      <h2 class="h2">{{ t.about.title }}</h2>
-      <p class="mt-5 leading-relaxed">{{ t.about.text }}</p>
-      <a href="#advantages" class="btn-primary mt-7">{{ t.about.btn }}{{ icon('arrow-right', 'size-4') }}</a>
-    </div>
-    <div class="reveal relative lg:pr-24">
-      <img src="{{ a }}assets/img/about.webp" alt="{{ t.about.img_alt }}" width="985" height="600" loading="lazy" class="aspect-[16/10] w-full rounded-2xl object-cover">
-      <ul id="about-card" class="card mt-4 space-y-4 p-5 shadow-float lg:absolute lg:-right-0 lg:top-1/2 lg:mt-0 lg:w-72 lg:-translate-y-1/2 lg:p-6">
+  <div class="container-site grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
+    <div class="reveal relative order-2 lg:order-1 lg:pb-10">
+      <div class="overflow-hidden rounded-[28px]">
+        <img src="{{ a }}assets/img/about.webp" alt="{{ t.about.img_alt }}" width="985" height="600" loading="lazy" class="aspect-[4/3.4] w-full object-cover">
+      </div>
+      <ul id="about-card" class="mt-4 space-y-4 rounded-2xl bg-surface p-5 shadow-float lg:absolute lg:-right-10 lg:bottom-0 lg:mt-0 lg:w-72 lg:p-6">
         {% for f in t.about.facts %}
         <li class="flex items-center gap-3.5">
-          <span class="icon-badge size-11 rounded-full">{{ icon(about_icons[loop.index0], 'size-5') }}</span>
-          <span class="text-sm font-medium leading-snug text-heading">{{ f }}</span>
+          <span class="icon-badge size-11 rounded-xl">{{ icon(about_icons[loop.index0], 'size-5') }}</span>
+          <span class="text-sm font-semibold leading-snug text-heading">{{ f }}</span>
         </li>
         {% endfor %}
       </ul>
+    </div>
+    <div class="reveal order-1 lg:order-2">
+      <p class="eyebrow">{{ t.about.overline }}</p>
+      <h2 class="h2">{{ t.about.title }}</h2>
+      <p class="mt-5 max-w-xl text-base leading-relaxed md:text-[17px]">{{ t.about.text }}</p>
+      <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border pt-8">
+        {% for s in stats['items'] %}
+        <div class="flex flex-col-reverse gap-1">
+          <dt class="text-sm leading-snug text-text-muted">{{ t.stats[loop.index0] }}</dt>
+          <dd class="text-[32px] font-extrabold leading-none tracking-tight text-primary tabular-nums md:text-[40px]">{{ s }}</dd>
+        </div>
+        {% endfor %}
+      </dl>
+      <a href="#advantages" class="btn-primary mt-9">{{ t.about.btn }}{{ icon('arrow-right', 'size-4') }}</a>
     </div>
   </div>
 </section>
 
 {# ============ 4. Преимущества ============ #}
 <section id="advantages" class="section bg-bg-page">
-  <div class="container-site">
-    <div class="reveal">
+  <div class="container-site grid gap-10 lg:grid-cols-[0.8fr_1.6fr] lg:gap-16">
+    <div class="reveal lg:sticky lg:top-32 lg:self-start">
       <p class="eyebrow">{{ t.advantages.overline }}</p>
       <h2 class="h2">{{ t.advantages.title }}</h2>
+      <a href="#contact" data-modal="lead" class="btn-primary mt-8 max-lg:hidden">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
     </div>
-    {# сетка с линиями-разделителями: gap-px на фоне цвета border #}
-    <ul data-stagger class="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-px md:overflow-hidden md:rounded-2xl md:border md:border-border md:bg-border md:shadow-card lg:mt-10 xl:grid-cols-6">
+    <ul data-stagger class="grid gap-4 sm:grid-cols-2 lg:gap-5">
       {% for it in t.advantages['items'] %}
-      <li class="flex items-center gap-4 rounded-xl bg-surface p-4 md:flex-col md:items-start md:rounded-none md:p-6">
-        <span class="icon-badge size-12 rounded-xl">{{ icon(adv_icons[loop.index0], 'size-6') }}</span>
-        <div>
-          <h3 class="text-base font-bold leading-snug md:text-[17px]">{{ it.title }}</h3>
-          <p class="mt-1 text-sm leading-relaxed text-text-muted max-sm:hidden">{{ it.text }}</p>
+      <li class="group flex items-center gap-4 rounded-2xl bg-surface p-4 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float sm:block sm:p-6 lg:p-7">
+        <div class="flex shrink-0 items-start justify-between">
+          <span class="icon-badge size-12 rounded-xl transition-colors duration-300 group-hover:bg-primary group-hover:text-white">{{ icon(adv_icons[loop.index0], 'size-6') }}</span>
+          <span class="text-sm font-bold text-primary/40 tabular-nums max-sm:hidden">{{ '%02d' % loop.index }}</span>
         </div>
+        <h3 class="text-base font-bold leading-snug sm:mt-5 sm:text-lg">{{ it.title }}</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-text-muted max-sm:hidden">{{ it.text }}</p>
       </li>
       {% endfor %}
     </ul>
@@ -210,16 +236,17 @@
       <p class="eyebrow">{{ t.products.overline }}</p>
       <h2 class="h2">{{ t.products.title }}</h2>
     </div>
-    <div class="mt-8 grid gap-4 md:grid-cols-3 md:gap-6 lg:mt-10">
+    <div class="mt-10 grid gap-5 lg:mt-14 lg:grid-cols-2 lg:grid-rows-2 lg:gap-6">
       {% for it in t.products['items'] %}
-      <article class="card reveal group flex overflow-hidden transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float md:flex-col">
-        <div class="w-[96px] shrink-0 overflow-hidden bg-primary-soft sm:w-40 md:w-full">
-          <img src="{{ a }}assets/img/{{ product_imgs[loop.index0] }}.webp" alt="{{ it.alt }}" width="640" height="228" loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03] md:aspect-[16/9] md:h-auto">
+      {% set big = loop.first %}
+      <article class="reveal group flex overflow-hidden rounded-3xl bg-bg-page transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float {{ 'flex-col lg:row-span-2' if big else 'flex-col sm:flex-row' }}">
+        <div class="overflow-hidden {{ 'aspect-[16/9] lg:aspect-auto lg:flex-1' if big else 'aspect-[16/9] sm:aspect-auto sm:w-[42%] sm:shrink-0' }}">
+          <img src="{{ a }}assets/img/{{ product_imgs[loop.index0] }}.webp" alt="{{ it.alt }}" width="640" height="228" loading="lazy" class="size-full object-cover transition-transform duration-700 group-hover:scale-105">
         </div>
-        <div class="flex flex-1 flex-col p-4 md:p-6">
-          <h3 class="text-base font-bold md:text-lg">{{ it.title }}</h3>
-          <p class="mt-1.5 flex-1 text-sm leading-relaxed text-text-muted">{{ it.text }}</p>
-          <a href="#contact" data-modal="lead" class="link-more mt-3 self-start md:mt-5" data-topic="{{ it.title }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+        <div class="flex flex-1 flex-col p-6 {{ 'lg:flex-none lg:p-8' if big else 'lg:p-7' }}">
+          <h3 class="font-bold {{ 'text-xl lg:text-2xl' if big else 'text-lg lg:text-xl' }}">{{ it.title }}</h3>
+          <p class="mt-2 flex-1 text-[15px] leading-relaxed text-text-muted">{{ it.text }}</p>
+          <a href="#contact" data-modal="lead" class="link-more mt-5 self-start" data-topic="{{ it.title }}">{{ t.products.more }}<span class="grid size-8 place-items-center rounded-full bg-primary text-white transition-transform duration-300 group-hover:translate-x-1">{{ icon('arrow-right', 'size-4') }}</span></a>
         </div>
       </article>
       {% endfor %}
@@ -227,49 +254,46 @@
   </div>
 </section>
 
-{# ============ 6. Сотрудничество ============ #}
-<section id="partners" class="section bg-bg-page">
+{# ============ 6. Сотрудничество — акцентный блок ============ #}
+<section id="partners" class="pb-16 lg:pb-28">
   <div class="container-site">
-    <div class="card reveal grid overflow-hidden md:grid-cols-[35%_1fr]">
-      <img src="{{ a }}assets/img/partners.webp" alt="{{ t.partners.img_alt }}" width="627" height="336" loading="lazy" class="aspect-[16/8] size-full object-cover md:aspect-auto">
-      <div class="p-5 md:p-8 lg:p-10">
-        <p class="eyebrow">{{ t.partners.overline }}</p>
-        <h2 class="h2">{{ t.partners.title }}</h2>
-        <p class="mt-4 leading-relaxed max-md:line-clamp-4">{{ t.partners.text }}</p>
-        <ul data-stagger class="mt-6 grid grid-cols-2 gap-x-3 gap-y-4 max-md:hidden xl:grid-cols-4">
+    <div class="reveal relative grid overflow-hidden rounded-[32px] bg-primary text-white lg:grid-cols-[1.15fr_1fr]">
+      <div aria-hidden="true" class="accent-glow pointer-events-none absolute inset-0"></div>
+      <div class="relative p-7 sm:p-10 lg:p-14">
+        <p class="eyebrow eyebrow-light">{{ t.partners.overline }}</p>
+        <h2 class="h2 !text-white">{{ t.partners.title }}</h2>
+        <p class="mt-5 max-w-xl leading-relaxed text-white/85">{{ t.partners.text }}</p>
+        <ul data-stagger class="mt-8 grid gap-3 sm:grid-cols-2">
           {% for it in t.partners['items'] %}
-          <li class="flex min-w-0 items-center gap-2.5">
-            <span class="icon-badge size-9 rounded-lg">{{ icon(partner_icons[loop.index0], 'size-5') }}</span>
-            <span class="text-[13px] font-medium leading-snug text-text">{{ it }}</span>
+          <li class="flex items-center gap-3 rounded-xl bg-white/10 p-3.5 text-sm font-semibold ring-1 ring-white/10">
+            <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-primary">{{ icon(partner_icons[loop.index0], 'size-5') }}</span>{{ it }}
           </li>
           {% endfor %}
         </ul>
-        <a href="#contact" data-modal="lead" class="link-more mt-6" data-topic="{{ t.partners.topic }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+        <a href="#contact" data-modal="lead" data-topic="{{ t.partners.topic }}" class="mt-8 inline-flex h-12 cursor-pointer items-center gap-2 rounded-lg bg-white px-6 font-semibold text-primary transition-[background-color,transform] duration-200 hover:bg-primary-soft active:scale-[.98]">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+      </div>
+      <div class="relative min-h-60 overflow-hidden lg:min-h-full">
+        <img src="{{ a }}assets/img/partners.webp" alt="{{ t.partners.img_alt }}" width="627" height="336" loading="lazy" class="absolute inset-0 size-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-primary/60 to-transparent lg:bg-gradient-to-r lg:from-primary lg:via-primary/20 lg:to-transparent"></div>
       </div>
     </div>
   </div>
 </section>
 
 {# ============ 7. Как мы работаем ============ #}
-<section id="process" class="section">
+<section id="process" class="section bg-bg-page">
   <div class="container-site">
     <div class="reveal">
       <p class="eyebrow">{{ t.process.overline }}</p>
       <h2 class="h2">{{ t.process.title }}</h2>
     </div>
-    <ol id="steps" data-stagger class="mt-8 grid gap-0 md:grid-cols-4 md:gap-6 lg:mt-12">
+    <ol id="steps" data-stagger class="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-6">
       {% for s in t.process.steps %}
-      <li class="relative flex gap-4 pb-7 last:pb-0 md:block md:pb-0">
-        {# вертикальная линия (мобильный) #}
-        {% if not loop.last %}<span class="absolute left-[21px] top-12 bottom-1 w-px bg-border md:hidden" aria-hidden="true"></span>{% endif %}
-        <div class="flex items-center gap-3 md:mb-5">
-          <span class="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-primary text-[15px] font-bold text-white ring-8 ring-primary-soft">{{ '%02d' % loop.index }}</span>
-          {% if not loop.last %}<span class="step-line hidden h-px flex-1 origin-left bg-primary/30 md:block" aria-hidden="true"></span><span class="-ml-3 hidden text-text-muted md:block" aria-hidden="true">{{ icon('chevron-right', 'size-4') }}</span>{% endif %}
-        </div>
-        <div>
-          <h3 class="text-base font-bold md:text-lg">{{ s.title }}</h3>
-          <p class="mt-1 text-sm leading-relaxed text-text-muted">{{ s.text }}</p>
-        </div>
+      <li class="relative flex gap-4 rounded-2xl bg-surface p-5 shadow-card sm:block sm:p-6 lg:p-7">
+        {% if not loop.last %}<span class="step-line absolute top-[46px] -right-6 hidden h-0.5 w-6 origin-left bg-primary/40 lg:block" aria-hidden="true"></span>{% endif %}
+        <span class="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-base font-bold text-white ring-[6px] ring-primary-soft tabular-nums sm:size-12">{{ '%02d' % loop.index }}</span>
+        <div><h3 class="text-base font-bold sm:mt-6 sm:text-lg">{{ s.title }}</h3>
+        <p class="mt-1.5 text-[15px] leading-relaxed text-text-muted sm:mt-2">{{ s.text }}</p></div>
       </li>
       {% endfor %}
     </ol>
@@ -277,49 +301,51 @@
 </section>
 
 {# ============ 8. Качество ============ #}
-<section id="quality" class="section bg-bg-page">
-  <div class="container-site grid items-center gap-6 lg:grid-cols-[1fr_1.35fr_1fr] lg:gap-10">
-    <div class="reveal overflow-hidden rounded-2xl"><img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="aspect-[16/9] size-full object-cover lg:aspect-[4/3]"></div>
+<section id="quality" class="section">
+  <div class="container-site grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+    <div class="reveal relative lg:pb-12">
+      <div class="overflow-hidden rounded-[28px]"><img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="aspect-[4/3] w-full object-cover"></div>
+      <ul data-stagger class="mt-4 space-y-3.5 rounded-2xl bg-surface p-6 shadow-float lg:absolute lg:-right-10 lg:bottom-0 lg:mt-0 lg:w-80">
+        {% for c in t.quality.checklist %}
+        <li class="flex items-center gap-3 text-[15px] font-semibold text-heading">
+          <span class="grid size-7 shrink-0 place-items-center rounded-full bg-success-soft text-success">{{ icon('check', 'size-4') }}</span>{{ c }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
     <div class="reveal">
       <p class="eyebrow">{{ t.quality.overline }}</p>
       <h2 class="h2">{{ t.quality.title }}</h2>
-      <p class="mt-4 leading-relaxed">{{ t.quality.text }}</p>
+      <p class="mt-5 max-w-xl text-base leading-relaxed md:text-[17px]">{{ t.quality.text }}</p>
     </div>
-    <ul data-stagger class="card space-y-4 p-6">
-      {% for c in t.quality.checklist %}
-      <li class="flex items-center gap-3 text-[15px] font-medium text-heading">
-        <span class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-white">{{ icon('check', 'size-4') }}</span>{{ c }}
-      </li>
-      {% endfor %}
-    </ul>
   </div>
 </section>
 
 {# ============ 9. Ценовая политика + аналитика (из брифа) ============ #}
-<section id="pricing" class="section">
-  <div class="container-site grid gap-6 lg:grid-cols-2 lg:gap-10">
+<section id="pricing" class="section bg-bg-page">
+  <div class="container-site grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
     <div class="reveal">
       <p class="eyebrow">{{ t.pricing.overline }}</p>
-      <h2 class="h2">{{ t.pricing.title }}</h2>
-      <p class="mt-4 leading-relaxed">{{ t.pricing.text }}</p>
-      <ul data-stagger class="mt-6 grid gap-3 sm:grid-cols-3">
+      <h2 class="h2 lg:!text-[52px]">{{ t.pricing.title }}</h2>
+      <p class="mt-5 max-w-xl text-base leading-relaxed md:text-[17px]">{{ t.pricing.text }}</p>
+      <ul data-stagger class="mt-8 space-y-3">
         {% for p in t.pricing.points %}
-        <li class="flex items-center gap-3 rounded-xl border border-border bg-bg-page p-3.5 sm:flex-col sm:items-start">
-          <span class="icon-badge size-10 rounded-lg bg-surface">{{ icon(pricing_icons[loop.index0], 'size-5') }}</span>
-          <span class="text-sm font-semibold leading-snug text-heading">{{ p }}</span>
+        <li class="flex items-center gap-3.5 text-base font-semibold text-heading md:text-[17px]">
+          <span class="icon-badge size-10 rounded-xl bg-surface shadow-card">{{ icon(pricing_icons[loop.index0], 'size-5') }}</span>{{ p }}
         </li>
         {% endfor %}
       </ul>
-      <img src="{{ a }}assets/img/pricing.webp" alt="{{ t.pricing.img_alt }}" width="810" height="285" loading="lazy" class="mt-6 aspect-[810/285] w-full rounded-2xl object-cover">
+      <div class="mt-8 overflow-hidden rounded-2xl"><img src="{{ a }}assets/img/pricing.webp" alt="{{ t.pricing.img_alt }}" width="810" height="285" loading="lazy" class="aspect-[810/285] w-full object-cover"></div>
     </div>
-    <div class="reveal flex flex-col justify-center rounded-2xl bg-primary p-6 text-white md:p-10">
-      <span class="grid size-12 place-items-center rounded-xl bg-white/15">{{ icon('chart-line', 'size-6') }}</span>
-      <h3 class="mt-5 text-xl font-bold !text-white md:text-2xl">{{ t.pricing.analytics_title }}</h3>
-      <p class="mt-3 leading-relaxed text-white/85">{{ t.pricing.analytics_text }}</p>
-      <ul data-stagger class="mt-6 space-y-3">
+    <div class="reveal relative flex flex-col overflow-hidden rounded-[28px] bg-footer p-7 text-white sm:p-10">
+      <div aria-hidden="true" class="accent-glow pointer-events-none absolute inset-0"></div>
+      <span class="relative grid size-12 place-items-center rounded-xl bg-white/10 ring-1 ring-white/15">{{ icon('chart-line', 'size-6') }}</span>
+      <h3 class="relative mt-6 text-2xl font-bold leading-tight !text-white md:text-[28px]">{{ t.pricing.analytics_title }}</h3>
+      <p class="relative mt-4 leading-relaxed text-on-footer-muted">{{ t.pricing.analytics_text }}</p>
+      <ul data-stagger class="relative mt-8 divide-y divide-white/10 border-y border-white/10 lg:mt-auto">
         {% for it in t.pricing.analytics_items %}
-        <li class="flex items-center gap-3 rounded-xl bg-white/10 p-3.5 text-[15px] font-semibold">
-          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-primary">{{ icon(analytics_icons[loop.index0], 'size-5') }}</span>{{ it }}
+        <li class="flex items-center gap-4 py-4 text-base font-semibold">
+          <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-white text-primary">{{ icon(analytics_icons[loop.index0], 'size-5') }}</span>{{ it }}
         </li>
         {% endfor %}
       </ul>
@@ -328,23 +354,21 @@
 </section>
 
 {# ============ 10. Акции (из брифа) ============ #}
-<section id="promo" class="section bg-bg-page">
+<section id="promo" class="section">
   <div class="container-site">
     <div class="reveal">
       <p class="eyebrow">{{ t.promo.overline }}</p>
       <h2 class="h2">{{ t.promo.title }}</h2>
     </div>
-    <div class="mt-8 grid gap-4 md:grid-cols-3 md:gap-6 lg:mt-10">
+    <div class="mt-10 grid gap-5 md:grid-cols-3 lg:mt-14 lg:gap-6">
       {% for it in t.promo['items'] %}
       {% set dark = loop.index0 < 2 %}
-      <article class="reveal flex flex-col rounded-2xl p-6 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float md:p-7 {{ ['bg-primary text-white', 'bg-footer text-white', 'border border-primary/15 bg-primary-soft text-text'][loop.index0] }}">
-        <div class="flex items-center justify-between">
-          <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ 'bg-white/15 text-white' if dark else 'bg-surface text-primary' }}">{{ it.label }}</span>
-          <span class="{{ 'text-white/70' if dark else 'text-primary' }}">{{ icon(promo_icons[loop.index0], 'size-7') }}</span>
-        </div>
-        <h3 class="mt-6 text-xl font-bold leading-snug {{ '!text-white' if dark else '' }}">{{ it.title }}</h3>
-        <p class="mt-2 flex-1 text-sm leading-relaxed {{ 'text-white/80' if dark else 'text-text' }}">{{ it.text }}</p>
-        <a href="#contact" data-modal="lead" data-topic="{{ it.topic }}" class="mt-6 inline-flex cursor-pointer items-center gap-1.5 self-start text-sm font-semibold transition-opacity hover:opacity-80 {{ 'text-white' if dark else 'text-primary' }}">{{ t.promo.more }}{{ icon('arrow-right', 'size-4') }}</a>
+      <article class="reveal group relative flex min-h-64 flex-col overflow-hidden rounded-3xl p-7 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float lg:min-h-72 lg:p-8 {{ ['bg-primary text-white', 'bg-footer text-white', 'bg-primary-soft text-text'][loop.index0] }}">
+        <span aria-hidden="true" class="pointer-events-none absolute -right-10 -bottom-10 transition-transform duration-500 group-hover:scale-110 {{ 'text-white/10' if dark else 'text-primary/10' }}">{{ icon(promo_icons[loop.index0], 'size-32 lg:size-40') }}</span>
+        <span class="relative self-start rounded-md px-2.5 py-1 text-xs font-bold tracking-wide {{ 'bg-white/15 text-white' if dark else 'bg-surface text-primary' }}">{{ it.label }}</span>
+        <h3 class="relative mt-6 text-xl font-bold leading-snug lg:text-[22px] {{ '!text-white' if dark else '' }}">{{ it.title }}</h3>
+        <p class="relative mt-2 flex-1 text-[15px] leading-relaxed {{ 'text-white/80' if dark else 'text-text' }}">{{ it.text }}</p>
+        <a href="#contact" data-modal="lead" data-topic="{{ it.topic }}" class="relative mt-6 inline-flex cursor-pointer items-center gap-2 self-start text-sm font-semibold {{ 'text-white' if dark else 'text-primary' }}">{{ t.promo.more }}<span class="grid size-8 place-items-center rounded-full transition-transform duration-300 group-hover:translate-x-1 {{ 'bg-white text-primary' if dark else 'bg-primary text-white' }}">{{ icon('arrow-right', 'size-4') }}</span></a>
       </article>
       {% endfor %}
     </div>
@@ -352,14 +376,14 @@
 </section>
 
 {# ============ 11–12. Аптеки + Заявка ============ #}
-<section id="branches" class="section">
+<section id="branches" class="section bg-bg-page">
   <div class="container-site grid gap-10 lg:grid-cols-2 lg:gap-12">
     <div class="reveal">
-      <h2 class="text-[22px] font-bold md:text-[28px]">{{ t.branches.title }}</h2>
-      <p class="mt-2 text-sm leading-relaxed text-text-muted md:text-[15px]">{{ t.branches.text }}</p>
+      <h2 class="h2 !mt-0">{{ t.branches.title }}</h2>
+      <p class="mt-4 max-w-xl text-[15px] leading-relaxed text-text-muted">{{ t.branches.text }}</p>
       <ul data-stagger class="mt-6 space-y-4">
         {% for br in b['items'] %}
-        <li class="card flex gap-4 p-3 md:p-4">
+        <li class="flex gap-4 rounded-2xl bg-surface p-3 shadow-card md:p-4">
           <div class="relative hidden w-32 shrink-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-footer p-3 text-white sm:flex">
             {{ logo_mark('size-10', invert=True) }}
             <span class="text-[13px] font-extrabold tracking-tight">{{ t.brand.name }}</span>
@@ -385,8 +409,8 @@
       </ul>
     </div>
 
-    <div id="contact" class="reveal card p-5 md:p-8">
-      <h2 class="text-[22px] font-bold md:text-[28px]">{{ t.form.title }}</h2>
+    <div id="contact" class="reveal rounded-[28px] bg-surface p-6 shadow-float md:p-10">
+      <h2 class="text-2xl font-extrabold tracking-tight md:text-[32px]">{{ t.form.title }}</h2>
       <p class="mt-2 text-sm leading-relaxed text-text-muted md:text-[15px]">{{ t.form.text }}</p>
       <div class="mt-6">{{ lead_form('f') }}</div>
     </div>
@@ -394,7 +418,7 @@
 </section>
 
 {# ============ 13. Возврат и обмен (из брифа) ============ #}
-<section class="pb-12 lg:pb-16" aria-labelledby="returns-title">
+<section class="bg-bg-page pb-16 lg:pb-24" aria-labelledby="returns-title">
   <div class="container-site">
     <div class="reveal flex items-start gap-3 rounded-xl border border-warning/20 bg-warning-soft p-4 md:items-center md:p-5">
       <span class="text-warning">{{ icon('info', 'size-5') }}</span>

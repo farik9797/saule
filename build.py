@@ -139,7 +139,13 @@ def main():
     for lang in LANGS:
         t = msgs[lang]
         nested = lang != "ru"
-        html = tpl.render(
+        rated = [br for br in b["items"] if br["rating"]]
+        stats = {
+            "rating": max(br["rating"] for br in rated),
+            "ratings": sum(br["ratings"] for br in rated),
+        }
+        stats["items"] = ["2021", stats["rating"], str(stats["ratings"]), "24/7"]
+        html = tpl.render(stats=stats, 
             t=t, b=b, lang=lang, a="../" if nested else "", version=version, urls=urls,
             lang_href={"ru": "../" if nested else "./", "kk": "./" if nested else "kk/"},
             nav_keys=nav_keys, nav_ids=nav_ids,

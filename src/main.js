@@ -74,7 +74,7 @@
       .fromTo('[data-hero-list] > *', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, stagger: 0.08, duration: 0.6 }, '-=0.45');
 
     // Hero: лёгкий параллакс фото
-    gsap.to('#hero-media img', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '#home', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.fromTo('#hero-media img', { yPercent: -7 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '#home', start: 'top top', end: 'bottom top', scrub: true } });
 
     // Появление блоков снизу (по мере входа в экран, пачками со сдвигом)
     ScrollTrigger.batch('.reveal', {
@@ -167,9 +167,11 @@
     if (!target) return;
     e.preventDefault();
     history.pushState(null, '', a.getAttribute('href'));
-    // Lenis сам учитывает scroll-padding-top из CSS (отступ под sticky-шапку)
-    if (lenis) lenis.scrollTo(target, { duration: 1.2 });
-    else window.scrollTo({ top: target.getBoundingClientRect().top + scrollY + headerOffset(), behavior: 'smooth' });
+    // считаем позицию сами: Lenis с элементом-целью ошибается, если страница уже прокручена
+    const pad = parseFloat(getComputedStyle(root).scrollPaddingTop) || -headerOffset();
+    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - pad);
+    if (lenis) lenis.scrollTo(top, { duration: 1.2 });
+    else window.scrollTo({ top, behavior: 'smooth' });
   });
 
   // ---- Формы заявки (блок на странице и попап) ----
