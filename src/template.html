@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
-  <link rel="preload" as="image" href="{{ a }}assets/img/hero.webp">
+  <link rel="preload" as="image" href="{{ a }}assets/img/hero.webp?v={{ version }}">
   <link rel="stylesheet" href="{{ a }}assets/styles.css?v={{ version }}">
   <script>(function(d){d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('anim');setTimeout(function(){if(!d.classList.contains('anim-ready'))d.classList.remove('anim')},3000)}})(document.documentElement)</script>
   <script type="application/ld+json">{{ jsonld }}</script>
@@ -144,7 +144,7 @@
     </div>
     <div data-hero class="relative">
       <div id="hero-media" class="relative aspect-[4/3.3] overflow-hidden rounded-[28px] shadow-float lg:aspect-[1/1.02]">
-        <img src="{{ a }}assets/img/hero.webp" alt="{{ t.hero.img_alt }}" width="735" height="530" class="absolute inset-x-0 top-0 h-[112%] w-full object-cover" fetchpriority="high">
+        <img src="{{ a }}assets/img/hero.webp?v={{ version }}" alt="{{ t.hero.img_alt }}" width="735" height="530" class="absolute inset-x-0 top-0 h-[112%] w-full object-cover" fetchpriority="high">
         <div class="absolute inset-0 bg-gradient-to-t from-heading/25 via-transparent to-transparent"></div>
       </div>
       <div class="absolute top-5 -left-2 flex items-center gap-3 rounded-2xl bg-surface/95 px-4 py-3 shadow-float backdrop-blur sm:-left-4 lg:top-10 xl:-left-10">
@@ -178,7 +178,7 @@
   <div class="container-site grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
     <div class="reveal relative order-2 lg:order-1 lg:pb-10">
       <div class="overflow-hidden rounded-[28px]">
-        <img src="{{ a }}assets/img/about.webp" alt="{{ t.about.img_alt }}" width="985" height="600" loading="lazy" class="aspect-[4/3.4] w-full object-cover">
+        <img src="{{ a }}assets/img/about.webp?v={{ version }}" alt="{{ t.about.img_alt }}" width="985" height="600" loading="lazy" class="aspect-[4/3.4] w-full object-cover">
       </div>
       <ul id="about-card" class="mt-4 space-y-4 rounded-2xl bg-surface p-5 shadow-float lg:absolute lg:-right-10 lg:bottom-0 lg:mt-0 lg:w-72 lg:p-6">
         {% for f in t.about.facts %}
@@ -241,7 +241,7 @@
       {% set big = loop.first %}
       <article class="reveal group flex overflow-hidden rounded-3xl bg-bg-page transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:shadow-float {{ 'flex-col lg:row-span-2' if big else 'flex-col sm:flex-row' }}">
         <div class="overflow-hidden {{ 'aspect-[16/9] lg:aspect-auto lg:flex-1' if big else 'aspect-[16/9] sm:aspect-auto sm:w-[42%] sm:shrink-0' }}">
-          <img src="{{ a }}assets/img/{{ product_imgs[loop.index0] }}.webp" alt="{{ it.alt }}" width="640" height="228" loading="lazy" class="size-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <img src="{{ a }}assets/img/{{ product_imgs[loop.index0] }}.webp?v={{ version }}" alt="{{ it.alt }}" width="1600" height="585" loading="lazy" class="size-full object-cover transition-transform duration-700 group-hover:scale-105">
         </div>
         <div class="flex flex-1 flex-col p-6 {{ 'lg:flex-none lg:p-8' if big else 'lg:p-7' }}">
           <h3 class="font-bold {{ 'text-xl lg:text-2xl' if big else 'text-lg lg:text-xl' }}">{{ it.title }}</h3>
@@ -273,7 +273,7 @@
         <a href="#contact" data-modal="lead" data-topic="{{ t.partners.topic }}" class="mt-8 inline-flex h-12 cursor-pointer items-center gap-2 rounded-lg bg-white px-6 font-semibold text-primary transition-[background-color,transform] duration-200 hover:bg-primary-soft active:scale-[.98]">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
       </div>
       <div class="relative min-h-60 overflow-hidden lg:min-h-full">
-        <img src="{{ a }}assets/img/partners.webp" alt="{{ t.partners.img_alt }}" width="627" height="336" loading="lazy" class="absolute inset-0 size-full object-cover">
+        <img src="{{ a }}assets/img/partners.webp?v={{ version }}" alt="{{ t.partners.img_alt }}" width="1600" height="858" loading="lazy" class="absolute inset-0 size-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-b from-primary/60 to-transparent lg:bg-gradient-to-r lg:from-primary lg:via-primary/20 lg:to-transparent"></div>
       </div>
     </div>
@@ -304,7 +304,7 @@
 <section id="quality" class="section">
   <div class="container-site grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
     <div class="reveal relative lg:pb-12">
-      <div class="overflow-hidden rounded-[28px]"><img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="aspect-[4/3] w-full object-cover"></div>
+      <div class="overflow-hidden rounded-[28px]"><img src="{{ a }}assets/img/quality.webp?v={{ version }}" alt="{{ t.quality.img_alt }}" width="1080" height="621" loading="lazy" class="aspect-[4/3] w-full object-cover"></div>
       <ul data-stagger class="mt-4 space-y-3.5 rounded-2xl bg-surface p-6 shadow-float lg:absolute lg:-right-10 lg:bottom-0 lg:mt-0 lg:w-80">
         {% for c in t.quality.checklist %}
         <li class="flex items-center gap-3 text-[15px] font-semibold text-heading">
@@ -335,7 +335,7 @@
         </li>
         {% endfor %}
       </ul>
-      <div class="mt-8 overflow-hidden rounded-2xl"><img src="{{ a }}assets/img/pricing.webp" alt="{{ t.pricing.img_alt }}" width="810" height="285" loading="lazy" class="aspect-[810/285] w-full object-cover"></div>
+      <div class="mt-8 overflow-hidden rounded-2xl"><img src="{{ a }}assets/img/pricing.webp?v={{ version }}" alt="{{ t.pricing.img_alt }}" width="810" height="285" loading="lazy" class="aspect-[810/285] w-full object-cover"></div>
     </div>
     <div class="reveal relative flex flex-col overflow-hidden rounded-[28px] bg-footer p-7 text-white sm:p-10">
       <div aria-hidden="true" class="accent-glow pointer-events-none absolute inset-0"></div>

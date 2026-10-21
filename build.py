@@ -126,7 +126,11 @@ def main():
 
     subprocess.run(["npx", "@tailwindcss/cli", "-i", "src/styles.css", "-o", "dist/assets/styles.css", "--minify"],
                    cwd=ROOT, check=True, capture_output=True)
-    version = hashlib.md5((DIST / "assets/styles.css").read_bytes() + (ROOT / "src/main.js").read_bytes()).hexdigest()[:8]
+    # версия для сброса кеша: CSS, JS и все картинки
+    h = hashlib.md5((DIST / "assets/styles.css").read_bytes() + (ROOT / "src/main.js").read_bytes())
+    for img in sorted((ROOT / "assets/img").iterdir()):
+        h.update(img.read_bytes())
+    version = h.hexdigest()[:8]
 
     env = Environment(loader=FileSystemLoader(ROOT / "src"), autoescape=True, undefined=StrictUndefined,
                       trim_blocks=True, lstrip_blocks=True)
