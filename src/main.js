@@ -121,8 +121,46 @@
     root.classList.remove('anim');
   }
 
-  // Якорные ссылки: плавно и с отступом под sticky-шапку
+  // ---- Попапы (<dialog>) ----
+  let lastFocus = null;
+  const openModal = (name) => {
+    const d = document.getElementById(name + '-modal');
+    if (!d || d.open) return null;
+    $$('dialog[open]').forEach((o) => o.close());
+    lastFocus = lastFocus || document.activeElement;
+    if (!menu.classList.contains('hidden')) setMenu(false);
+    d.showModal();
+    lenis?.stop();
+    root.classList.add('modal-open');
+    // на десктопе сразу ставим курсор в первое поле, на телефоне не открываем клавиатуру
+    const first = $('input:not([type=hidden]):not([tabindex="-1"])', d);
+    if (first && matchMedia('(pointer: fine)').matches) first.focus();
+    return d;
+  };
+  $$('dialog.modal').forEach((d) => {
+    d.addEventListener('close', () => {
+      if ($$('dialog[open]').length) return;
+      lenis?.start();
+      root.classList.remove('modal-open');
+      lastFocus?.focus({ preventScroll: true });
+      lastFocus = null;
+    });
+    // клик по затемнению вокруг окна
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+    $$('[data-close]', d).forEach((b) => b.addEventListener('click', () => d.close()));
+  });
+
+  // Клики: открыть попап / тема заявки / якорь с плавным скроллом
   document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('[data-modal]');
+    const topicEl = e.target.closest('[data-topic]');
+    if (topicEl) $$('[data-lead-form]').forEach((f) => { f.message.value = f.dataset.topicPrefix + topicEl.dataset.topic; });
+    if (trigger) {
+      e.preventDefault();
+      lastFocus = trigger;
+      openModal(trigger.dataset.modal);
+      return;
+    }
     const a = e.target.closest('a[href^="#"]');
     if (!a || a.getAttribute('href') === '#') return;
     const target = document.querySelector(a.getAttribute('href'));
@@ -132,17 +170,9 @@
     // Lenis сам учитывает scroll-padding-top из CSS (отступ под sticky-шапку)
     if (lenis) lenis.scrollTo(target, { duration: 1.2 });
     else window.scrollTo({ top: target.getBoundingClientRect().top + scrollY + headerOffset(), behavior: 'smooth' });
-    if (a.closest('#lead-form, #contact') === null && a.getAttribute('href') === '#contact') {
-      setTimeout(() => $('#f-name')?.focus({ preventScroll: true }), 900);
-    }
   });
 
-  // ---- Форма ----
-  const form = $('#lead-form');
-  if (!form) return;
-  const phone = form.phone;
-
-  // маска +7 (___) ___-__-__
+  // ---- Формы заявки (блок на странице и попап) ----
   const formatPhone = (v) => {
     let d = v.replace(/\D/g, '');
     if (d.startsWith('8')) d = '7' + d.slice(1);
@@ -157,44 +187,50 @@
     if (p.length > 8) out += '-' + p.slice(8, 10);
     return out;
   };
-  phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7'; });
-  phone.addEventListener('input', (e) => {
-    let d = phone.value.replace(/\D/g, '');
-    // «8» первой цифрой после +7 или вставка полного номера 8…/+7… — убираем лишний префикс
-    if (d.length === 2 && d[1] === '8' && e.inputType === 'insertText') d = '7';
-    if (d.length > 11 && (d[1] === '8' || d[1] === '7')) d = '7' + d.slice(2);
-    phone.value = formatPhone(d);
-  });
-  phone.addEventListener('blur', () => { if (phone.value === '+7') phone.value = ''; });
-
-  // кнопки с темой подставляют её в сообщение
-  $$('[data-topic]').forEach((a) => a.addEventListener('click', () => {
-    form.message.value = form.dataset.topicPrefix + a.dataset.topic;
-  }));
-
-  const setError = (input, ok) => {
-    const err = document.getElementById('e-' + input.name);
-    input.setAttribute('aria-invalid', String(!ok));
-    if (err) { err.textContent = ok ? '' : input.dataset.error; err.classList.toggle('hidden', ok); }
-    return ok;
-  };
   const checks = {
     name: (i) => i.value.trim().length >= 2,
     phone: (i) => i.value.replace(/\D/g, '').length === 11,
     email: (i) => !i.value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(i.value),
     consent: (i) => i.checked,
   };
-  Object.keys(checks).forEach((n) => form[n].addEventListener('change', () => setError(form[n], checks[n](form[n]))));
+  const setError = (input, ok) => {
+    const err = document.getElementById(input.getAttribute('aria-describedby'));
+    input.setAttribute('aria-invalid', String(!ok));
+    if (err) { err.textContent = ok ? '' : input.dataset.error; err.classList.toggle('hidden', ok); }
+    return ok;
+  };
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (form.website.value) return; // honeypot
-    const bad = Object.keys(checks).filter((n) => !setError(form[n], checks[n](form[n])));
-    if (bad.length) { form[bad[0]].focus(); return; }
+  $$('[data-lead-form]').forEach((form) => {
+    const phone = form.phone;
+    phone.addEventListener('focus', () => { if (!phone.value) phone.value = '+7'; });
+    phone.addEventListener('input', (e) => {
+      let d = phone.value.replace(/\D/g, '');
+      // «8» первой цифрой после +7 или вставка полного номера 8…/+7… — убираем лишний префикс
+      if (d.length === 2 && d[1] === '8' && e.inputType === 'insertText') d = '7';
+      if (d.length > 11 && (d[1] === '8' || d[1] === '7')) d = '7' + d.slice(2);
+      phone.value = formatPhone(d);
+    });
+    phone.addEventListener('blur', () => { if (phone.value === '+7') phone.value = ''; });
 
-    // Превью без бэкенда: заявка уходит в WhatsApp. На проде — Telegram-бот + e-mail (раздел 4 ТЗ).
-    const lines = [form.dataset.intro, form.name.value.trim(), form.org.value.trim(), form.phone.value, form.email.value.trim(), form.message.value.trim()].filter(Boolean);
-    $('#form-success').classList.remove('hidden');
-    window.open('https://wa.me/' + form.dataset.wa + '?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    const fields = Object.keys(checks).filter((n) => form[n]);
+    fields.forEach((n) => form[n].addEventListener('change', () => setError(form[n], checks[n](form[n]))));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (form.website.value) return; // honeypot
+      const bad = fields.filter((n) => !setError(form[n], checks[n](form[n])));
+      if (bad.length) { form[bad[0]].focus(); return; }
+
+      // Превью без бэкенда: заявка уходит в WhatsApp. На проде — Telegram-бот + e-mail (раздел 4 ТЗ).
+      const val = (n) => (form[n] ? form[n].value.trim() : '');
+      const text = [form.dataset.intro, val('name'), val('org'), val('phone'), val('email'), val('message')].filter(Boolean).join('\n');
+      const url = 'https://wa.me/' + form.dataset.wa + '?text=' + encodeURIComponent(text);
+      window.open(url, '_blank', 'noopener');
+      const ok = $('#success-modal');
+      $('[data-success-wa]', ok).href = url;
+      form.reset();
+      lastFocus = lastFocus || form.querySelector('[type=submit]');
+      openModal('success');
+    });
   });
 })();

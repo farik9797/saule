@@ -28,6 +28,62 @@
   <script type="application/ld+json">{{ jsonld }}</script>
 </head>
 <body>
+{# Форма заявки: одна разметка для блока «Оставить заявку» (p='f') и попапа (p='m', compact) #}
+{% macro lead_form(p, compact=False) %}
+<form id="{{ p }}-form" class="grid gap-4 {{ 'sm:grid-cols-2' if compact else 'md:grid-cols-2' }}" novalidate data-lead-form
+      data-wa="{{ b.whatsapp.wa }}" data-intro="{{ t.form.wa_intro }}" data-topic-prefix="{{ t.form.topic_prefix }}">
+  <div>
+    <label for="{{ p }}-name" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.name }} <span class="text-danger" aria-hidden="true">*</span></label>
+    <input id="{{ p }}-name" name="name" type="text" autocomplete="name" required class="field" aria-describedby="{{ p }}-e-name" data-error="{{ t.form.err_name }}">
+    <p id="{{ p }}-e-name" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+  </div>
+  {% if not compact %}
+  <div>
+    <label for="{{ p }}-org" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.org }}</label>
+    <input id="{{ p }}-org" name="org" type="text" autocomplete="organization" class="field">
+  </div>
+  {% endif %}
+  <div>
+    <label for="{{ p }}-phone" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.phone }} <span class="text-danger" aria-hidden="true">*</span></label>
+    <input id="{{ p }}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required class="field" aria-describedby="{{ p }}-e-phone" data-error="{{ t.form.err_phone }}">
+    <p id="{{ p }}-e-phone" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+  </div>
+  {% if not compact %}
+  <div>
+    <label for="{{ p }}-email" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.email }}</label>
+    <input id="{{ p }}-email" name="email" type="email" autocomplete="email" class="field" aria-describedby="{{ p }}-e-email" data-error="{{ t.form.err_email }}">
+    <p id="{{ p }}-e-email" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+  </div>
+  {% endif %}
+  <div class="{{ 'sm:col-span-2' if compact else 'md:col-span-2' }}">
+    <label for="{{ p }}-message" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.message }}</label>
+    <textarea id="{{ p }}-message" name="message" rows="{{ 3 if compact else 4 }}" class="field !h-auto py-3"></textarea>
+  </div>
+  {# honeypot #}
+  <div class="hidden" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+  <div class="{{ 'sm:col-span-2' if compact else 'md:col-span-2' }}">
+    <label class="flex cursor-pointer items-start gap-3 text-sm text-text">
+      <input id="{{ p }}-consent" name="consent" type="checkbox" required class="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary" aria-describedby="{{ p }}-e-consent" data-error="{{ t.form.err_consent }}">
+      <span>{{ t.form.consent }} <span class="text-danger" aria-hidden="true">*</span>
+        <button type="button" class="cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary-hover" data-modal="privacy">{{ t.footer.privacy }}</button></span>
+    </label>
+    <p id="{{ p }}-e-consent" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
+  </div>
+  <div class="{{ 'sm:col-span-2' if compact else 'md:col-span-2' }}">
+    <button type="submit" class="btn-primary {{ 'w-full' if compact else 'w-full md:w-auto' }}">{{ icon('send', 'size-4') }}{{ t.form.submit }}</button>
+  </div>
+</form>
+{% endmacro %}
+
+{% macro modal_head(id, title, text='') %}
+<div class="flex items-start justify-between gap-2 sm:gap-4">
+  <div class="min-w-0">
+    <h2 id="{{ id }}" class="text-lg font-bold [overflow-wrap:anywhere] hyphens-auto sm:text-xl md:text-2xl">{{ title }}</h2>
+    {% if text %}<p class="mt-1.5 text-sm leading-relaxed text-text-muted">{{ text }}</p>{% endif %}
+  </div>
+  <button type="button" class="-mt-1 -mr-2 grid size-11 shrink-0 cursor-pointer place-items-center rounded-lg text-text hover:bg-primary-soft hover:text-primary" data-close aria-label="{{ t.modal.close }}">{{ icon('x', 'size-5') }}</button>
+</div>
+{% endmacro %}
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-white">{{ t.a11y.skip }}</a>
 
 {# ============ 1. Шапка ============ #}
@@ -53,7 +109,7 @@
         <a href="{{ lang_href.ru }}" data-lang-link class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'ru' else 'text-text hover:text-primary' }}" {% if lang == 'ru' %}aria-current="true"{% endif %} hreflang="ru" lang="ru">RU</a>
         <a href="{{ lang_href.kk }}" data-lang-link class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'kk' else 'text-text hover:text-primary' }}" {% if lang == 'kk' %}aria-current="true"{% endif %} hreflang="kk" lang="kk">KZ</a>
       </div>
-      <a href="#contact" class="btn-primary hidden !h-11 !px-5 md:inline-flex">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
+      <a href="#contact" data-modal="lead" class="btn-primary hidden !h-11 !px-5 md:inline-flex">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
       <button type="button" id="burger" class="grid size-11 cursor-pointer place-items-center rounded-lg text-heading hover:bg-primary-soft xl:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="{{ t.a11y.menu_open }}" data-label-open="{{ t.a11y.menu_open }}" data-label-close="{{ t.a11y.menu_close }}">
         {{ icon('menu', 'size-6') }}
       </button>
@@ -64,7 +120,7 @@
     <nav class="container-site flex flex-col py-3">
       {% for key in nav_keys %}<a href="#{{ nav_ids[key] }}" class="flex min-h-11 cursor-pointer items-center border-b border-border/60 text-[15px] font-semibold text-heading hover:text-primary">{{ t.nav[key] }}</a>{% endfor %}
       <a href="tel:{{ b.phone.tel }}" class="mt-3 flex min-h-11 items-center gap-2 font-semibold text-heading">{{ icon('phone', 'size-4 text-primary') }}{{ b.phone.display }}</a>
-      <a href="#contact" class="btn-primary mt-2 w-full">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
+      <a href="#contact" data-modal="lead" class="btn-primary mt-2 w-full">{{ icon('send', 'size-4') }}{{ t.nav.cta }}</a>
     </nav>
   </div>
 </header>
@@ -79,12 +135,12 @@
       <h1 data-hero class="mt-2 text-[28px] font-extrabold leading-[1.15] tracking-tight md:text-[40px] lg:text-[48px]">{{ t.hero.title }}</h1>
       <p class="mt-4 text-[15px] leading-relaxed md:text-lg" data-hero>{{ t.hero.text }}</p>
       <div class="mt-7 flex flex-col gap-3 sm:flex-row" data-hero>
-        <a href="#contact" class="btn-primary" data-topic="{{ t.hero.topic }}">{{ t.hero.btn_primary }}{{ icon('arrow-right', 'size-4') }}</a>
+        <a href="#contact" data-modal="lead" class="btn-primary" data-topic="{{ t.hero.topic }}">{{ t.hero.btn_primary }}{{ icon('arrow-right', 'size-4') }}</a>
         <a href="#contacts" class="btn-secondary">{{ t.hero.btn_secondary }}</a>
       </div>
-      <ul class="mt-8 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4" data-hero-list>
+      <ul class="mt-8 grid grid-cols-2 gap-x-3 gap-y-4 sm:max-w-md lg:max-w-none xl:w-[700px] xl:grid-cols-4" data-hero-list>
         {% for f in t.hero.features %}
-        <li class="flex items-center gap-2.5">
+        <li class="flex min-w-0 items-center gap-2.5 max-[399px]:flex-col max-[399px]:items-start max-[399px]:gap-2">
           <span class="icon-badge size-11 rounded-full border border-primary/10 bg-surface">{{ icon(hero_icons[loop.index0], 'size-5') }}</span>
           <span class="text-[13px] font-medium leading-snug text-text">{{ f }}</span>
         </li>
@@ -133,7 +189,7 @@
       <h2 class="h2">{{ t.advantages.title }}</h2>
     </div>
     {# сетка с линиями-разделителями: gap-px на фоне цвета border #}
-    <ul data-stagger class="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-px md:overflow-hidden md:rounded-2xl md:border md:border-border md:bg-border md:shadow-card lg:mt-10 lg:grid-cols-6">
+    <ul data-stagger class="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-px md:overflow-hidden md:rounded-2xl md:border md:border-border md:bg-border md:shadow-card lg:mt-10 xl:grid-cols-6">
       {% for it in t.advantages['items'] %}
       <li class="flex items-center gap-4 rounded-xl bg-surface p-4 md:flex-col md:items-start md:rounded-none md:p-6">
         <span class="icon-badge size-12 rounded-xl">{{ icon(adv_icons[loop.index0], 'size-6') }}</span>
@@ -163,7 +219,7 @@
         <div class="flex flex-1 flex-col p-4 md:p-6">
           <h3 class="text-base font-bold md:text-lg">{{ it.title }}</h3>
           <p class="mt-1.5 flex-1 text-sm leading-relaxed text-text-muted">{{ it.text }}</p>
-          <a href="#contact" class="link-more mt-3 self-start md:mt-5" data-topic="{{ it.title }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+          <a href="#contact" data-modal="lead" class="link-more mt-3 self-start md:mt-5" data-topic="{{ it.title }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
         </div>
       </article>
       {% endfor %}
@@ -180,15 +236,15 @@
         <p class="eyebrow">{{ t.partners.overline }}</p>
         <h2 class="h2">{{ t.partners.title }}</h2>
         <p class="mt-4 leading-relaxed max-md:line-clamp-4">{{ t.partners.text }}</p>
-        <ul data-stagger class="mt-6 grid grid-cols-2 gap-4 max-md:hidden lg:grid-cols-4">
+        <ul data-stagger class="mt-6 grid grid-cols-2 gap-x-3 gap-y-4 max-md:hidden xl:grid-cols-4">
           {% for it in t.partners['items'] %}
-          <li class="flex items-center gap-3">
-            <span class="icon-badge size-10 rounded-lg">{{ icon(partner_icons[loop.index0], 'size-5') }}</span>
+          <li class="flex min-w-0 items-center gap-2.5">
+            <span class="icon-badge size-9 rounded-lg">{{ icon(partner_icons[loop.index0], 'size-5') }}</span>
             <span class="text-[13px] font-medium leading-snug text-text">{{ it }}</span>
           </li>
           {% endfor %}
         </ul>
-        <a href="#contact" class="link-more mt-6" data-topic="{{ t.partners.topic }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
+        <a href="#contact" data-modal="lead" class="link-more mt-6" data-topic="{{ t.partners.topic }}">{{ t.products.more }}{{ icon('arrow-right', 'size-4') }}</a>
       </div>
     </div>
   </div>
@@ -223,7 +279,7 @@
 {# ============ 8. Качество ============ #}
 <section id="quality" class="section bg-bg-page">
   <div class="container-site grid items-center gap-6 lg:grid-cols-[1fr_1.35fr_1fr] lg:gap-10">
-    <img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="reveal aspect-[16/9] w-full rounded-2xl object-cover lg:aspect-[4/3]">
+    <div class="reveal overflow-hidden rounded-2xl"><img src="{{ a }}assets/img/quality.webp" alt="{{ t.quality.img_alt }}" width="800" height="533" loading="lazy" class="aspect-[16/9] size-full object-cover lg:aspect-[4/3]"></div>
     <div class="reveal">
       <p class="eyebrow">{{ t.quality.overline }}</p>
       <h2 class="h2">{{ t.quality.title }}</h2>
@@ -288,7 +344,7 @@
         </div>
         <h3 class="mt-6 text-xl font-bold leading-snug {{ '!text-white' if dark else '' }}">{{ it.title }}</h3>
         <p class="mt-2 flex-1 text-sm leading-relaxed {{ 'text-white/80' if dark else 'text-text' }}">{{ it.text }}</p>
-        <a href="#contact" data-topic="{{ it.topic }}" class="mt-6 inline-flex cursor-pointer items-center gap-1.5 self-start text-sm font-semibold transition-opacity hover:opacity-80 {{ 'text-white' if dark else 'text-primary' }}">{{ t.promo.more }}{{ icon('arrow-right', 'size-4') }}</a>
+        <a href="#contact" data-modal="lead" data-topic="{{ it.topic }}" class="mt-6 inline-flex cursor-pointer items-center gap-1.5 self-start text-sm font-semibold transition-opacity hover:opacity-80 {{ 'text-white' if dark else 'text-primary' }}">{{ t.promo.more }}{{ icon('arrow-right', 'size-4') }}</a>
       </article>
       {% endfor %}
     </div>
@@ -332,45 +388,7 @@
     <div id="contact" class="reveal card p-5 md:p-8">
       <h2 class="text-[22px] font-bold md:text-[28px]">{{ t.form.title }}</h2>
       <p class="mt-2 text-sm leading-relaxed text-text-muted md:text-[15px]">{{ t.form.text }}</p>
-      <form id="lead-form" class="mt-6 grid gap-4 md:grid-cols-2" novalidate
-            data-wa="{{ b.whatsapp.wa }}" data-intro="{{ t.form.wa_intro }}" data-topic-prefix="{{ t.form.topic_prefix }}">
-        <div>
-          <label for="f-name" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.name }} <span class="text-danger" aria-hidden="true">*</span></label>
-          <input id="f-name" name="name" type="text" autocomplete="name" required class="field" aria-describedby="e-name" data-error="{{ t.form.err_name }}">
-          <p id="e-name" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
-        </div>
-        <div>
-          <label for="f-org" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.org }}</label>
-          <input id="f-org" name="org" type="text" autocomplete="organization" class="field">
-        </div>
-        <div>
-          <label for="f-phone" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.phone }} <span class="text-danger" aria-hidden="true">*</span></label>
-          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required class="field" aria-describedby="e-phone" data-error="{{ t.form.err_phone }}">
-          <p id="e-phone" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
-        </div>
-        <div>
-          <label for="f-email" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.email }}</label>
-          <input id="f-email" name="email" type="email" autocomplete="email" class="field" aria-describedby="e-email" data-error="{{ t.form.err_email }}">
-          <p id="e-email" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
-        </div>
-        <div class="md:col-span-2">
-          <label for="f-message" class="mb-1.5 block text-sm font-medium text-heading">{{ t.form.message }}</label>
-          <textarea id="f-message" name="message" rows="4" class="field !h-auto py-3"></textarea>
-        </div>
-        {# honeypot #}
-        <div class="hidden" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
-        <div class="md:col-span-2">
-          <label class="flex cursor-pointer items-start gap-3 text-sm text-text">
-            <input id="f-consent" name="consent" type="checkbox" required class="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary" aria-describedby="e-consent" data-error="{{ t.form.err_consent }}">
-            <span>{{ t.form.consent }} <span class="text-danger" aria-hidden="true">*</span></span>
-          </label>
-          <p id="e-consent" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
-        </div>
-        <div class="md:col-span-2">
-          <button type="submit" class="btn-primary w-full md:w-auto">{{ icon('send', 'size-4') }}{{ t.form.submit }}</button>
-          <p id="form-success" class="mt-4 hidden rounded-lg bg-success-soft p-3 text-sm font-medium text-success" role="status">{{ t.form.success }}</p>
-        </div>
-      </form>
+      <div class="mt-6">{{ lead_form('f') }}</div>
     </div>
   </div>
 </section>
@@ -389,7 +407,7 @@
 
 {# ============ 14. Футер ============ #}
 <footer id="contacts" class="bg-footer text-on-footer-muted">
-  <div class="container-site grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_0.8fr_1.3fr] lg:gap-8">
+  <div class="container-site grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[1.1fr_1fr_1fr_0.8fr_1.3fr]">
     <div>
       <a href="#home" class="flex items-center gap-2.5" aria-label="{{ t.a11y.home }}">
         {{ logo_mark('size-11', invert=True) }}
@@ -419,19 +437,54 @@
         <span class="grid size-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">{{ brand_icon('whatsapp', 'size-5') }}</span>WhatsApp
       </a>
     </div>
-    <iframe src="{{ map_url }}" title="{{ t.branches.map_label }}" loading="lazy" class="hidden h-52 w-full overflow-hidden rounded-xl border-0 bg-white/5 lg:block" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <iframe src="{{ map_url }}" title="{{ t.branches.map_label }}" loading="lazy" class="hidden h-52 w-full overflow-hidden rounded-xl border-0 bg-white/5 lg:col-span-4 lg:block xl:col-span-1" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   <div class="border-t border-white/10">
     <p class="container-site pt-5 text-xs text-white">{{ t.footer.disclaimer }}</p>
     <div class="container-site flex flex-col gap-3 pt-2 pb-5 text-xs md:flex-row md:items-center md:justify-between">
       <p>{{ t.footer.rights }}</p>
       <div class="flex gap-5">
-        <a href="#" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.privacy }}</a>
-        <a href="#" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.terms }}</a>
+        <a href="#" data-modal="privacy" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.privacy }}</a>
+        <a href="#" data-modal="terms" class="underline-offset-2 hover:text-white hover:underline">{{ t.footer.terms }}</a>
       </div>
     </div>
   </div>
 </footer>
+
+{# ============ Попапы ============ #}
+<dialog id="lead-modal" class="modal" aria-labelledby="lead-modal-title">
+  <div class="modal-box">
+    {{ modal_head('lead-modal-title', t.modal.lead_title, t.modal.lead_text) }}
+    <div class="mt-5">{{ lead_form('m', compact=True) }}</div>
+    <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-border pt-4 text-sm text-text-muted">{{ icon('phone', 'size-4 text-primary') }}<span>{{ t.modal.or_call }}</span> <a href="tel:{{ b.phone.tel }}" class="whitespace-nowrap font-semibold text-heading hover:text-primary" data-goal="phone">{{ b.phone.display }}</a></p>
+  </div>
+</dialog>
+
+<dialog id="success-modal" class="modal" aria-labelledby="success-modal-title">
+  <div class="modal-box text-center">
+    <span class="mx-auto grid size-16 place-items-center rounded-full bg-success-soft text-success">{{ icon('circle-check', 'size-8') }}</span>
+    <h2 id="success-modal-title" class="mt-4 text-xl font-bold md:text-2xl">{{ t.modal.success_title }}</h2>
+    <p class="mt-2 text-sm leading-relaxed text-text">{{ t.modal.success_text }}</p>
+    <div class="mt-6 flex flex-col gap-3">
+      <a href="https://wa.me/{{ b.whatsapp.wa }}" target="_blank" rel="noopener" class="btn-primary w-full" data-success-wa data-goal="whatsapp">{{ brand_icon('whatsapp', 'size-5') }}{{ t.modal.success_btn }}</a>
+      <button type="button" class="btn-secondary w-full" data-close>{{ t.modal.ok }}</button>
+    </div>
+  </div>
+</dialog>
+
+{% for key in ['privacy', 'terms'] %}
+<dialog id="{{ key }}-modal" class="modal" aria-labelledby="{{ key }}-modal-title">
+  <div class="modal-box">
+    {{ modal_head(key ~ '-modal-title', t.footer[key]) }}
+    <div class="mt-4 flex gap-3 rounded-xl bg-bg-page p-4 text-sm leading-relaxed text-text">
+      {{ icon('file-text', 'size-5 shrink-0 text-primary') }}
+      <p>{{ t.modal.docs_pending }}</p>
+    </div>
+    <p class="mt-4 text-sm text-text-muted">{{ t.footer.rights }} · {{ t.footer.bin }}</p>
+    <button type="button" class="btn-primary mt-6 w-full sm:w-auto" data-close>{{ t.modal.ok }}</button>
+  </div>
+</dialog>
+{% endfor %}
 
 {# плавающая кнопка WhatsApp на мобильном #}
 <a href="https://wa.me/{{ b.whatsapp.wa }}?text={{ wa_hello }}" target="_blank" rel="noopener" class="fixed right-4 bottom-4 z-40 grid size-14 cursor-pointer place-items-center rounded-full bg-primary text-white shadow-float transition-colors hover:bg-primary-hover md:hidden" aria-label="{{ t.a11y.whatsapp }}" data-goal="whatsapp">{{ brand_icon('whatsapp', 'size-6') }}</a>

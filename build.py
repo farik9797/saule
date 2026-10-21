@@ -114,9 +114,11 @@ def main():
     check_keys(msgs)
     b = load("content/branches.json")
 
-    if DIST.exists():
-        shutil.rmtree(DIST)
-    (DIST / "assets").mkdir(parents=True)
+    # чистим содержимое, а не саму папку — локальный dev-сервер держит dist/ открытой
+    DIST.mkdir(exist_ok=True)
+    for item in DIST.iterdir():
+        shutil.rmtree(item) if item.is_dir() else item.unlink()
+    (DIST / "assets").mkdir()
     shutil.copytree(ROOT / "assets/img", DIST / "assets/img")
     shutil.copy(ROOT / "src/main.js", DIST / "assets/main.js")
     (DIST / "assets/img/favicon.svg").write_text(logo_svg("#0062B0", "#FFFFFF"))

@@ -70,6 +70,27 @@
 .anim .is-in .eyebrow::before, .anim .is-in.eyebrow::before { transform: scaleX(1); }
 #site-header.is-scrolled { box-shadow: 0 6px 24px rgba(6, 42, 90, 0.08); }
 
+/* Попапы (<dialog>): плавное появление; закрытие тоже анимируется там, где есть allow-discrete */
+.modal {
+  margin: auto; width: calc(100% - 32px); max-width: 560px; max-height: calc(100dvh - 32px);
+  padding: 0; border: 0; border-radius: 20px; background: var(--color-surface); color: var(--color-text);
+  box-shadow: 0 24px 64px rgba(6, 42, 90, 0.22); overflow: auto; overscroll-behavior: contain;
+  opacity: 0; transform: translateY(16px) scale(.98);
+  transition: opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1), overlay .3s allow-discrete, display .3s allow-discrete;
+}
+.modal[open] { opacity: 1; transform: none; }
+.modal::backdrop { background: rgba(6, 42, 90, 0); backdrop-filter: blur(0); transition: background .3s, backdrop-filter .3s, overlay .3s allow-discrete, display .3s allow-discrete; }
+.modal[open]::backdrop { background: rgba(6, 42, 90, .45); backdrop-filter: blur(3px); }
+@starting-style {
+  .modal[open] { opacity: 0; transform: translateY(16px) scale(.98); }
+  .modal[open]::backdrop { background: rgba(6, 42, 90, 0); backdrop-filter: blur(0); }
+}
+.modal-box { padding: 20px; }
+@media (min-width: 640px) { .modal-box { padding: 32px; } }
+#success-modal { max-width: 440px; }
+#privacy-modal, #terms-modal { max-width: 600px; }
+html.modal-open { overflow: hidden; }
+
 /* Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
