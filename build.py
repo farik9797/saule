@@ -105,7 +105,7 @@ def jsonld(t, b, lang):
 def map_url(b):
     """Виджет 2ГИС «организации на карте» — без API-ключа, метки по id карточек."""
     ids = [br["url"].rsplit("/", 1)[1] for br in b["items"] if br["url"]]
-    opts = {"pos": {"lat": 42.295, "lon": 69.64, "zoom": 11}, "opt": {"city": "shymkent"}, "org": ",".join(ids)}
+    opts = {"pos": {"lat": 42.305, "lon": 69.64, "zoom": 10}, "opt": {"city": "shymkent"}, "org": ",".join(ids)}
     return "https://widgets.2gis.com/widget?type=firmsonmap&options=" + quote(json.dumps(opts, separators=(",", ":")))
 
 

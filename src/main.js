@@ -32,11 +32,15 @@
   // ---- Подсветка активного пункта меню ----
   const navLinks = $$('[data-nav]');
   const sections = navLinks.map((a) => document.getElementById(a.dataset.nav)).filter(Boolean);
+  // блок «Аптеки + заявка» относится к пункту «Контакты» (футер слишком низкий, чтобы попасть в зону)
+  const alias = { branches: 'contacts', quality: 'process', pricing: 'process', promo: 'process' };
+  ['branches', 'quality', 'pricing', 'promo'].forEach((id) => { const el = document.getElementById(id); if (el) sections.push(el); });
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
-        navLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.nav === en.target.id));
+        const id = alias[en.target.id] || en.target.id;
+        navLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.nav === id));
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
     sections.forEach((s) => spy.observe(s));
