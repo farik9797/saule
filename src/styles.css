@@ -45,6 +45,8 @@
 
 @layer components {
   .container-site { @apply mx-auto w-full max-w-site px-4 md:px-6; }
+  /* шапка и подвал шире контента: в 1200 px полная шапка не помещается */
+  .container-wide { @apply xl:max-w-[1340px] 3xl:max-w-[1480px]; }
   .section { @apply py-12 lg:py-20; }
   .eyebrow { @apply flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.08em] text-overline md:text-sm; }
   .eyebrow::before { content: ""; @apply h-0.5 w-6 shrink-0 rounded-full bg-primary; }
