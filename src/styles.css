@@ -29,6 +29,7 @@
   --shadow-float: 0 16px 40px rgba(6, 42, 90, 0.10);
 
   --container-site: 1200px;
+  --breakpoint-3xl: 105rem; /* 1680px: полная шапка с номером телефона */
 }
 
 @layer base {
@@ -56,7 +57,7 @@
   .field { @apply h-12 w-full rounded-lg border border-border bg-surface px-4 text-[15px] text-heading placeholder:text-text-muted transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15; }
   .field[aria-invalid="true"] { @apply border-danger; }
   .link-more { @apply inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover; }
-  .nav-link { @apply relative cursor-pointer py-2 text-[13px] font-medium 2xl:text-sm text-heading transition-colors hover:text-primary; }
+  .nav-link { @apply relative cursor-pointer py-2 text-[13px] font-medium 3xl:text-sm text-heading transition-colors hover:text-primary; }
   .nav-link.is-active { @apply text-primary; }
   .nav-link.is-active::after { content: ""; @apply absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-primary; }
 }

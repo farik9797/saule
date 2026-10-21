@@ -88,8 +88,8 @@
 
 {# ============ 1. Шапка ============ #}
 <header id="site-header" class="sticky top-0 z-50 border-b border-border/70 bg-surface/95 backdrop-blur transition-shadow duration-300">
-  <div class="container-site flex h-16 items-center justify-between gap-2 whitespace-nowrap sm:gap-4 lg:h-[72px] xl:max-w-[1340px]">
-    <a href="#home" class="flex min-w-0 items-center gap-2.5" aria-label="{{ t.a11y.home }}">
+  <div class="container-site flex h-16 items-center justify-between gap-2 whitespace-nowrap sm:gap-4 lg:h-[72px] xl:max-w-[1340px] 3xl:max-w-[1480px]">
+    <a href="#home" class="flex min-w-0 items-center gap-2.5 lg:shrink-0" aria-label="{{ t.a11y.home }}">
       {{ logo_mark('size-10 shrink-0 lg:size-11') }}
       <span class="min-w-0 leading-tight">
         <span class="block text-lg font-extrabold tracking-tight text-heading lg:text-xl">{{ t.brand.name }}</span>
@@ -97,13 +97,13 @@
       </span>
     </a>
 
-    <nav class="hidden items-center gap-3.5 xl:flex 2xl:gap-5" aria-label="Main">
+    <nav class="hidden items-center gap-3.5 xl:flex 3xl:gap-5" aria-label="Main">
       {% for key in nav_keys %}<a href="#{{ nav_ids[key] }}" class="nav-link" data-nav="{{ nav_ids[key] }}">{{ t.nav[key] }}</a>{% endfor %}
     </nav>
 
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-      <a href="tel:{{ b.phone.tel }}" class="hidden min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg text-sm font-semibold text-heading transition-colors hover:text-primary lg:flex xl:hover:bg-primary-soft 2xl:hover:bg-transparent" aria-label="{{ t.a11y.call }} {{ b.phone.display }}" data-goal="phone">
-        {{ icon('phone', 'size-4 text-primary') }}<span class="xl:hidden 2xl:inline">{{ b.phone.display }}</span>
+      <a href="tel:{{ b.phone.tel }}" class="hidden min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg text-sm font-semibold text-heading transition-colors hover:text-primary lg:flex xl:hover:bg-primary-soft 3xl:hover:bg-transparent" aria-label="{{ t.a11y.call }} {{ b.phone.display }}" data-goal="phone">
+        {{ icon('phone', 'size-4 text-primary') }}<span class="xl:hidden 3xl:inline">{{ b.phone.display }}</span>
       </a>
       <div class="flex items-center rounded-lg border border-border p-0.5 text-xs font-bold" role="group" aria-label="{{ t.a11y.lang }}">
         <a href="{{ lang_href.ru }}" data-lang-link class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'ru' else 'text-text hover:text-primary' }}" {% if lang == 'ru' %}aria-current="true"{% endif %} hreflang="ru" lang="ru">RU</a>
