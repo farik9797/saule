@@ -62,15 +62,17 @@ def brand_icon(name, cls=""):
     return Markup(svg)
 
 
-# Знак логотипа: крест векторизован (potrace) из логотипа в брифе клиента; круг — примитив.
-CROSS = re.search(r"<g .*?</g>", (ROOT / "src/img/logo-cross-traced.svg").read_text(), flags=re.S).group(0)
+# Знак логотипа: крест векторизован (potrace) из логотипа клиента (22.10); круг — примитив.
+_CROSS_SVG = (ROOT / "src/img/logo-cross-traced.svg").read_text()
+CROSS_VB = re.search(r'viewBox="([^"]+)"', _CROSS_SVG).group(1)
+CROSS = re.search(r"<g .*?</g>", _CROSS_SVG, flags=re.S).group(0)
 CROSS = re.sub(r'fill="#000000"\s*', "", re.sub(r"\s+", " ", CROSS))
 
 
 def logo_svg(bg, fg, cls=""):
     return (f'<svg class="{cls}" viewBox="0 0 100 100" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">'
             f'<circle cx="50" cy="50" r="50" fill="{bg}"/>'
-            f'<svg x="20" y="20.5" width="60" height="57" viewBox="0 0 980 930" fill="{fg}">{CROSS}</svg></svg>')
+            f'<svg x="20" y="20.5" width="60" height="59" viewBox="{CROSS_VB}" fill="{fg}">{CROSS}</svg></svg>')
 
 
 def logo_mark(cls="", invert=False):
@@ -79,16 +81,17 @@ def logo_mark(cls="", invert=False):
 
 def jsonld(t, b, lang):
     org = {
-        "@type": "Organization", "@id": BASE_URL + "#org", "name": "ТОО «Саулефарм»", "alternateName": "СаулеФарм",
+        "@type": "Organization", "@id": BASE_URL + "#org", "name": "ТОО «Саулефарм»", "alternateName": "Сауле Фарм",
         "url": BASE_URL, "logo": BASE_URL + "assets/img/favicon.svg", "foundingDate": "2021-09-24",
         "taxID": "210940037976", "telephone": b["phone"]["tel"], "areaServed": "KZ",
+        **({"email": b["email"]} if b.get("email") else {}),
     }
     graph = [org]
     for br in b["items"]:
         if not br["lat"]:
             continue
         graph.append({
-            "@type": "Pharmacy", "name": "СаулеФарм", "parentOrganization": {"@id": org["@id"]},
+            "@type": "Pharmacy", "name": "Сауле Фарм", "parentOrganization": {"@id": org["@id"]},
             "telephone": br["phone"], "url": br["url"],
             "address": {"@type": "PostalAddress", "streetAddress": br["street"], "addressLocality": br["city"],
                         "postalCode": br["postal"] or None, "addressCountry": "KZ"},
@@ -148,7 +151,7 @@ def main():
             "rating": max(br["rating"] for br in rated),
             "ratings": sum(br["ratings"] for br in rated),
         }
-        stats["items"] = ["2021", stats["rating"], str(stats["ratings"]), "24/7"]
+        stats["items"] = ["10 000+", stats["rating"], str(stats["ratings"]), "24/7"]  # 10 000+ подтверждено клиентом 22.10
         html = tpl.render(stats=stats, 
             t=t, b=b, lang=lang, a="../" if nested else "", version=version, urls=urls,
             lang_href={"ru": "../" if nested else "./", "kk": "./" if nested else "kk/"},

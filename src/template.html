@@ -377,11 +377,23 @@
 
 {# ============ 11–12. Аптеки + Заявка ============ #}
 <section id="branches" class="section bg-bg-page">
-  <div class="container-site grid gap-10 lg:grid-cols-2 lg:gap-12">
+  <div class="container-site">
     <div class="reveal">
       <h2 class="h2 !mt-0">{{ t.branches.title }}</h2>
       <p class="mt-4 max-w-xl text-[15px] leading-relaxed text-text-muted">{{ t.branches.text }}</p>
-      <ul data-stagger class="mt-6 space-y-4">
+    </div>
+    {# реальные фото аптек клиента #}
+    <div data-stagger class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-[2fr_1.3fr_1fr] md:gap-4 lg:mt-10">
+      {% for g in [('gallery-1', 1600, 900), ('gallery-2', 1200, 675), ('gallery-3', 800, 1422)] %}
+      <div class="overflow-hidden rounded-2xl {{ 'col-span-2 md:col-span-1' if loop.first else '' }}">
+        <img src="{{ a }}assets/img/{{ g[0] }}.webp?v={{ version }}" alt="{{ t.branches.gallery_alt[loop.index0] }}" width="{{ g[1] }}" height="{{ g[2] }}" loading="lazy" class="aspect-[4/3] size-full object-cover transition-transform duration-700 hover:scale-105 md:aspect-auto md:h-72 lg:h-80">
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="container-site mt-10 grid gap-10 lg:mt-12 lg:grid-cols-2 lg:gap-12">
+    <div class="reveal">
+      <ul data-stagger class="space-y-4">
         {% for br in b['items'] %}
         <li class="flex gap-4 rounded-2xl bg-surface p-3 shadow-card md:p-4">
           <div class="relative hidden w-32 shrink-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-primary to-footer p-3 text-white sm:flex">
@@ -395,10 +407,10 @@
               {% if br.hours == '24/7' %}<span class="rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-bold text-success">{{ t.branches.open24 }}</span>{% endif %}
             </div>
             <dl class="mt-2 space-y-1 text-sm text-text">
-              {% if br.phone %}<div class="flex items-center gap-2">{{ icon('phone', 'size-4 text-primary') }}<a href="tel:{{ br.phone }}" class="hover:text-primary">{{ b.phone.display }}</a></div>{% endif %}
+              {% if br.phone %}<div class="flex items-center gap-2">{{ icon('phone', 'size-4 text-primary') }}<a href="tel:{{ br.phone }}" class="hover:text-primary">{{ br.phone_display }}</a></div>{% endif %}
               {% if br.hours and br.hours != '24/7' %}<div class="flex items-center gap-2">{{ icon('clock', 'size-4 text-primary') }}{{ t.branches.daily }} {{ br.hours }}</div>{% endif %}
               {% if br.rating %}<div class="flex items-center gap-2">{{ icon('star', 'size-4 text-primary') }}<span><b class="text-heading">{{ br.rating }}</b> · {{ br.ratings }} {{ t.branches.ratings }}</span></div>{% endif %}
-              {% if not br.phone %}<div class="flex items-center gap-2 text-text-muted">{{ icon('info', 'size-4') }}{{ t.branches.pending }}</div>{% endif %}
+              {% if not br.hours %}<div class="flex items-center gap-2 text-text-muted">{{ icon('clock', 'size-4') }}{{ t.branches.pending }}</div>{% endif %}
             </dl>
             {% if br.url %}
             <a href="{{ br.url }}" target="_blank" rel="noopener" class="btn-primary mt-3 !h-10 !px-4 !text-sm" data-goal="open_2gis">{{ icon('map-pin', 'size-4') }}{{ t.branches.open_2gis }}</a>
@@ -448,6 +460,8 @@
       <ul class="mt-4 space-y-3 text-sm">
         <li><a href="tel:{{ b.phone.tel }}" class="flex items-center gap-2.5 whitespace-nowrap transition-colors hover:text-white" data-goal="phone">{{ icon('phone', 'size-4 shrink-0 text-white') }}{{ b.phone.display }}</a></li>
         <li><a href="https://wa.me/{{ b.whatsapp.wa }}?text={{ wa_hello }}" target="_blank" rel="noopener" class="flex items-center gap-2.5 whitespace-nowrap transition-colors hover:text-white" aria-label="{{ t.a11y.whatsapp }}: {{ b.whatsapp.display }}" data-goal="whatsapp">{{ brand_icon('whatsapp', 'size-4 shrink-0 text-white') }}{{ b.whatsapp.display }}</a></li>
+        {% if b.telegram %}<li><a href="{{ b.telegram.url }}" target="_blank" rel="noopener" class="flex items-center gap-2.5 whitespace-nowrap transition-colors hover:text-white" aria-label="{{ t.a11y.telegram }}: {{ b.telegram.display }}" data-goal="telegram">{{ brand_icon('telegram', 'size-4 shrink-0 text-white') }}Telegram</a></li>{% endif %}
+        {% if b.email %}<li><a href="mailto:{{ b.email }}" class="flex items-center gap-2.5 break-all transition-colors hover:text-white" data-goal="email">{{ icon('mail', 'size-4 shrink-0 text-white') }}{{ b.email }}</a></li>{% endif %}
         <li class="flex items-start gap-2.5">{{ icon('map-pin', 'size-4 mt-0.5 shrink-0 text-white') }}<span>{{ t.footer.address }}</span></li>
       </ul>
     </div>
