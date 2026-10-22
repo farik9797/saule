@@ -138,6 +138,7 @@ def main():
     env = Environment(loader=FileSystemLoader(ROOT / "src"), autoescape=True, undefined=StrictUndefined,
                       trim_blocks=True, lstrip_blocks=True)
     tpl = env.get_template("template.html")
+    legal_tpl = env.get_template("legal.html")
     nav_keys = ["home", "about", "products", "advantages", "partners", "process", "contacts"]
     nav_ids = {"home": "home", "about": "about", "products": "products", "advantages": "advantages",
                "partners": "partners", "process": "process", "contacts": "contacts"}
@@ -171,6 +172,20 @@ def main():
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding="utf-8")
         print(f"  {out.relative_to(ROOT)}  {len(html) // 1024} KB")
+
+        # Юридические страницы: /privacy/, /terms/ и их казахские версии
+        for key, other in (("privacy", "terms"), ("terms", "privacy")):
+            page = legal_tpl.render(
+                t=t, b=b, lang=lang, key=key, other_doc=other, other_doc_href=f"../{other}/",
+                a="../../" if nested else "../", home="../", version=version,
+                page_urls={"ru": f"{BASE_URL}{key}/", "kk": f"{BASE_URL}kk/{key}/"},
+                lang_href={"ru": f"../../{key}/" if nested else "./", "kk": "./" if nested else f"../kk/{key}/"},
+                icon=icon, logo_mark=logo_mark,
+            )
+            dst = out.parent / key / "index.html"
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_text(page, encoding="utf-8")
+            print(f"  {dst.relative_to(ROOT)}  {len(page) // 1024} KB")
     print(f"  dist/assets/styles.css  {(DIST / 'assets/styles.css').stat().st_size // 1024} KB  v={version}")
 
 

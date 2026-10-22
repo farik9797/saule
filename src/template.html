@@ -28,6 +28,7 @@
   <script type="application/ld+json">{{ jsonld }}</script>
 </head>
 <body>
+{% from '_legal.html' import legal_body %}
 {# Форма заявки: одна разметка для блока «Оставить заявку» (p='f') и попапа (p='m', compact) #}
 {% macro lead_form(p, compact=False) %}
 <form id="{{ p }}-form" class="grid gap-4 {{ 'sm:grid-cols-2' if compact else 'md:grid-cols-2' }}" novalidate data-lead-form
@@ -65,7 +66,7 @@
     <label class="flex cursor-pointer items-start gap-3 text-sm text-text">
       <input id="{{ p }}-consent" name="consent" type="checkbox" required class="mt-0.5 size-5 shrink-0 cursor-pointer accent-primary" aria-describedby="{{ p }}-e-consent" data-error="{{ t.form.err_consent }}">
       <span>{{ t.form.consent }} <span class="text-danger" aria-hidden="true">*</span>
-        <button type="button" class="cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary-hover" data-modal="privacy">{{ t.footer.privacy }}</button></span>
+        <a href="privacy/" class="cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary-hover" data-modal="privacy">{{ t.footer.privacy }}</a></span>
     </label>
     <p id="{{ p }}-e-consent" class="mt-1 hidden text-xs font-medium text-danger" role="alert"></p>
   </div>
@@ -482,15 +483,15 @@
       <p class="text-white">{{ t.footer.disclaimer }}</p>
       <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-5">
         <p>{{ t.footer.rights }}</p>
-        <a href="#" data-modal="privacy" class="cursor-pointer underline-offset-2 hover:text-white hover:underline">{{ t.footer.privacy }}</a>
-        <a href="#" data-modal="terms" class="cursor-pointer underline-offset-2 hover:text-white hover:underline">{{ t.footer.terms }}</a>
+        <a href="privacy/" data-modal="privacy" class="cursor-pointer underline-offset-2 hover:text-white hover:underline">{{ t.footer.privacy }}</a>
+        <a href="terms/" data-modal="terms" class="cursor-pointer underline-offset-2 hover:text-white hover:underline">{{ t.footer.terms }}</a>
       </div>
     </div>
   </div>
 </footer>
 
 {# ============ Попапы ============ #}
-<dialog id="lead-modal" class="modal" aria-labelledby="lead-modal-title">
+<dialog id="lead-modal" class="modal" data-lenis-prevent aria-labelledby="lead-modal-title">
   <div class="modal-box">
     {{ modal_head('lead-modal-title', t.modal.lead_title, t.modal.lead_text) }}
     <div class="mt-5">{{ lead_form('m', compact=True) }}</div>
@@ -498,7 +499,7 @@
   </div>
 </dialog>
 
-<dialog id="success-modal" class="modal" aria-labelledby="success-modal-title">
+<dialog id="success-modal" class="modal" data-lenis-prevent aria-labelledby="success-modal-title">
   <div class="modal-box text-center">
     <span class="mx-auto grid size-16 place-items-center rounded-full bg-success-soft text-success">{{ icon('circle-check', 'size-8') }}</span>
     <h2 id="success-modal-title" class="mt-4 text-xl font-bold md:text-2xl">{{ t.modal.success_title }}</h2>
@@ -511,15 +512,14 @@
 </dialog>
 
 {% for key in ['privacy', 'terms'] %}
-<dialog id="{{ key }}-modal" class="modal" aria-labelledby="{{ key }}-modal-title">
+<dialog id="{{ key }}-modal" class="modal" data-lenis-prevent aria-labelledby="{{ key }}-modal-title">
   <div class="modal-box">
-    {{ modal_head(key ~ '-modal-title', t.footer[key]) }}
-    <div class="mt-4 flex gap-3 rounded-xl bg-bg-page p-4 text-sm leading-relaxed text-text">
-      {{ icon('file-text', 'size-5 shrink-0 text-primary') }}
-      <p>{{ t.modal.docs_pending }}</p>
+    {{ modal_head(key ~ '-modal-title', t.footer[key], t.legal.updated) }}
+    <div class="mt-5 border-t border-border pt-5">{{ legal_body(t, b, lang, key, 'h3') }}</div>
+    <div class="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row">
+      <button type="button" class="btn-primary" data-close>{{ t.modal.ok }}</button>
+      <a href="{{ key }}/" class="btn-secondary">{{ t.legal.open_page }}{{ icon('arrow-up-right', 'size-4') }}</a>
     </div>
-    <p class="mt-4 text-sm text-text-muted">{{ t.footer.rights }} · {{ t.footer.bin }}</p>
-    <button type="button" class="btn-primary mt-6 w-full sm:w-auto" data-close>{{ t.modal.ok }}</button>
   </div>
 </dialog>
 {% endfor %}

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @source "./template.html";
+@source "./legal.html";
+@source "./_legal.html";
 @source "./main.js";
 
 /* Токены — раздел 2 ТЗ. text-muted и overline затемнены до контраста ≥ 4.5:1 */

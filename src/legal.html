@@ -1,0 +1,60 @@
+{% from '_legal.html' import legal_body %}
+<!doctype html>
+<html lang="{{ t.meta.lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t.footer[key] }} — {{ t.brand.name }}</title>
+  <meta name="description" content="{{ t.footer[key] }} — {{ t.footer.rights }}">
+  {# Превью на GitHub Pages не должно индексироваться — убрать на боевом домене #}
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="{{ page_urls[lang] }}">
+  <link rel="alternate" hreflang="ru" href="{{ page_urls.ru }}">
+  <link rel="alternate" hreflang="kk" href="{{ page_urls.kk }}">
+  <meta name="theme-color" content="#0062B0">
+  <link rel="icon" href="{{ a }}assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+  <link rel="stylesheet" href="{{ a }}assets/styles.css?v={{ version }}">
+</head>
+<body class="bg-bg-page">
+<header class="border-b border-border bg-surface">
+  <div class="container-site flex h-16 items-center justify-between gap-3 lg:h-[72px]">
+    <a href="{{ home }}" class="flex min-w-0 items-center gap-2.5" aria-label="{{ t.a11y.home }}">
+      {{ logo_mark('size-10 shrink-0') }}
+      <span class="min-w-0 leading-tight">
+        <span class="block text-lg font-extrabold tracking-tight text-heading">{{ t.brand.name }}</span>
+        <span class="block truncate text-[11px] font-medium text-text-muted">{{ t.brand.tagline }}</span>
+      </span>
+    </a>
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+      <div class="flex items-center rounded-lg border border-border p-0.5 text-xs font-bold" role="group" aria-label="{{ t.a11y.lang }}">
+        <a href="{{ lang_href.ru }}" class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'ru' else 'text-text hover:text-primary' }}" hreflang="ru" lang="ru">RU</a>
+        <a href="{{ lang_href.kk }}" class="cursor-pointer rounded-md px-2 py-1.5 {{ 'bg-primary text-white' if lang == 'kk' else 'text-text hover:text-primary' }}" hreflang="kk" lang="kk">KZ</a>
+      </div>
+      <a href="{{ home }}" class="inline-flex h-11 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-semibold text-primary transition-colors hover:bg-primary-soft">{{ icon('arrow-left', 'size-4') }}<span class="max-sm:hidden">{{ t.legal.back }}</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="container-site py-10 md:py-16">
+  <article class="mx-auto max-w-3xl rounded-[28px] bg-surface p-6 shadow-card sm:p-10 lg:p-14">
+    <p class="eyebrow">{{ t.legal.updated }}</p>
+    <h1 class="h2">{{ t.footer[key] }}</h1>
+    <div class="mt-8 border-t border-border pt-8">{{ legal_body(t, b, lang, key) }}</div>
+    <div class="mt-10 flex flex-wrap gap-3 border-t border-border pt-8">
+      <a href="{{ home }}" class="btn-primary">{{ icon('arrow-left', 'size-4') }}{{ t.legal.back }}</a>
+      <a href="{{ other_doc_href }}" class="btn-secondary">{{ t.footer[other_doc] }}</a>
+    </div>
+  </article>
+</main>
+
+<footer class="bg-footer text-on-footer-muted">
+  <div class="container-site flex flex-col gap-2 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+    <p>{{ t.footer.rights }}</p>
+    <p>{{ t.footer.bin }}</p>
+  </div>
+</footer>
+</body>
+</html>

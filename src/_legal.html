@@ -1,0 +1,20 @@
+{# Тело юридического документа — общее для отдельной страницы и попапа #}
+{% macro legal_body(t, b, lang, key, heading_tag='h2') %}
+{% set addr = (b['items'] | selectattr('id', 'equalto', 'nursat') | first).address[lang] %}
+<ol class="legal-doc space-y-7">
+  {% for sec in t.legal[key].sections %}
+  <li>
+    <{{ heading_tag }} class="text-lg font-bold text-heading md:text-xl">{{ loop.index }}. {{ sec.h }}</{{ heading_tag }}>
+    {% set n = loop.index %}
+    <ul class="mt-3 space-y-2.5">
+      {% for p in sec.p %}
+      <li class="flex gap-3 text-[15px] leading-relaxed text-text">
+        <span class="shrink-0 font-semibold text-text-muted tabular-nums">{{ n }}.{{ loop.index }}</span>
+        <span>{{ p | replace('{email}', b.email) | replace('{phone}', b.phone.display) | replace('{address}', addr) }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </li>
+  {% endfor %}
+</ol>
+{% endmacro %}
